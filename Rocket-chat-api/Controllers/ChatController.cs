@@ -38,12 +38,14 @@ namespace Rocket_chat_api.Controllers
             if (match.Count > 0)
             {
                 var curUser = _context.Users.Find(curUserId);
+                
                 chatId =_chatWorker.AddChat(new List<User>(){curUser,match[0]});
                 
                 return Ok(chatId);
             }
             return BadRequest("Email not found");
         }
-        //TODO get messages by chat Id
+        //TODO get messages(all or at least last 10) by chat Id
+        //TODO get all chatIds + last message by userId
     }
 }
