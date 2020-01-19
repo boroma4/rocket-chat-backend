@@ -31,7 +31,7 @@ namespace Rocket_chat_api.Controllers
 
         [HttpGet]
         [Route("/api/addchat")]
-        public IActionResult Login(int curUserId,string emailToAdd)
+        public IActionResult AddChat(int curUserId,string emailToAdd)
         {
             var chatId = -1;
             var match =_context.Users.Where(u => u.Login.Email.Equals(emailToAdd)).ToList();
@@ -44,5 +44,6 @@ namespace Rocket_chat_api.Controllers
             }
             return BadRequest("Email not found");
         }
+        //TODO get messages by chat Id
     }
 }
