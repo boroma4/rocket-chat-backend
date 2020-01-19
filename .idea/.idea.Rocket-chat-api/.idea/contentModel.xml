@@ -10,6 +10,11 @@
         <e p="AppDbContext.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="DAL.csproj" t="IncludeRecursive" />
+        <e p="Migrations" t="Include">
+          <e p="20200119214920_InitialDbCreation.cs" t="Include" />
+          <e p="20200119214920_InitialDbCreation.Designer.cs" t="Include" />
+          <e p="AppDbContextModelSnapshot.cs" t="Include" />
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
@@ -41,6 +46,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="ChatWorker.cs" t="Include" />
         <e p="Controllers" t="Include">
+          <e p="ChatController.cs" t="Include" />
           <e p="LoginController.cs" t="Include" />
         </e>
         <e p="Hubs" t="Include">
@@ -60,6 +66,9 @@
         </e>
         <e p="Rocket-chat-api.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
+        <e p="users.db" t="Include" />
+        <e p="users.db-shm" t="Include" />
+        <e p="users.db-wal" t="Include" />
       </e>
       <e p="Rocket-chat-api.sln" t="IncludeFlat" />
     </e>
