@@ -13,6 +13,9 @@ namespace Domain
         public DbSet<Message> Messages { get; set; } = default!;
 
         public DbSet<User> Users { get; set; } = default!;
+        
+        public DbSet<ChatUser> ChatUsers { get; set; } = default!;
+
 
         public AppDbContext(DbContextOptions options) : base(options)
         {
