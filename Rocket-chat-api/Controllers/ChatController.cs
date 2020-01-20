@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL;
 using Domain;
+using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -20,9 +21,6 @@ namespace Rocket_chat_api.Controllers
         
         private ChatWorker _chatWorker;
         
-
-
-
         public ChatController(ILogger<LoginController> logger,AppDbContext context)
         {
             _logger = logger;
@@ -34,16 +32,20 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/addchat")]
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
-            var chatId = -1;
+            ChatUser chatUser;
             var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
             
             if (match != null)
             {
                 var curUser = _context.Users.Find(curUserId);
                 
-                chatId =_chatWorker.AddChat(new List<User>(){curUser,match});
+                chatUser =_chatWorker.AddChat(new List<User>(){curUser,match});
                 
-                return Ok(match.UserName);
+                return Ok(new AddChatDto
+                {
+                    ChatId = chatUser.ChatId,
+                    UserName = chatUser.User.UserName
+                });
             }
             return BadRequest("Email not found");
         }

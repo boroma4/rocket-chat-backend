@@ -15,25 +15,32 @@ namespace Rocket_chat_api
  
         private readonly AppDbContext _context;
         
-        public int AddChat(ICollection<User> users)
+        public ChatUser AddChat(ICollection<User> users)
         {
 
             //TODO verify that chat with same members does not exist yet
             
             var chatToAdd = new Chat();
             _context.Chats.Add(chatToAdd);
+
+            var addedChatUsers= new List<ChatUser>(2);
             
             foreach (var user in users)
             {
-                _context.ChatUsers.Add(new ChatUser
+                var ch = (new ChatUser
                 {
                     User = user,
                     Chat = chatToAdd
                 });
+                _context.ChatUsers.Add(ch);
+                
+                //hacky way to get ChatUser with second user
+                addedChatUsers.Add(ch);
             }
             _context.SaveChanges();
 
-            return chatToAdd.ChatId;
+            //first user is the one who sent request, second is the one to add
+            return addedChatUsers[1];
         }
         
         /*

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\consoles\db" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\extensions" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Rocket-chat-api.1570232835.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\Desktop\Rocket_Chat\rocket-chat-backend" t="IncludeFlat">
+    <e p="C:\Users\bohda\.Rider2019.2\config\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\config\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Rocket-chat-api.-383839702.00" t="ExcludeRecursive" />
+    <e p="D:\repos\TestReact\Rocket-chat-api" t="IncludeFlat">
       <e p="DAL" t="IncludeRecursive">
         <e p="AppDbContext.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
@@ -38,6 +38,18 @@
           </e>
         </e>
         <e p="User.cs" t="Include" />
+      </e>
+      <e p="DTO" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="ChatIdUserNameDTO.cs" t="Include" />
+        <e p="DTO.csproj" t="IncludeRecursive" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netstandard2.1" t="Include">
+              <e p="DTO.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Rocket-chat-api" t="IncludeRecursive">
