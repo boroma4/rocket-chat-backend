@@ -7,5 +7,7 @@
         public Chat Chat { get; set; } = default!;
         //sender
         public int UserId { get; set; } = default!;
+
+        public string MessageText { get; set; } = default!;
     }
 }

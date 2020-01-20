@@ -3,6 +3,10 @@ using System.Security.Cryptography;
 
 namespace Rocket_chat_api
 {
+    
+    /// <summary>
+    /// Class used to hash the password in order for it to be stored in the database
+    /// </summary>
     public  static class PasswordSecurity
     {
         internal static string Encrypt(string password)

@@ -9,6 +9,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Rocket_chat_api.Controllers
 {
+    
+    /// <summary>
+    /// Class used for controlling the Login/Register page
+    /// </summary>
     [ApiController]
     public class LoginController : ControllerBase
     {
