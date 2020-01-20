@@ -18,7 +18,8 @@ namespace Rocket_chat_api.Controllers
         
         private readonly AppDbContext _context;
         
-        private ChatWorker _chatWorker ;
+        private ChatWorker _chatWorker;
+        
 
 
 
@@ -34,14 +35,15 @@ namespace Rocket_chat_api.Controllers
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
             var chatId = -1;
-            var match =_context.Users.Where(u => u.Login.Email.Equals(emailToAdd)).ToList();
-            if (match.Count > 0)
+            var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
+            
+            if (match != null)
             {
                 var curUser = _context.Users.Find(curUserId);
                 
-                chatId =_chatWorker.AddChat(new List<User>(){curUser,match[0]});
+                chatId =_chatWorker.AddChat(new List<User>(){curUser,match});
                 
-                return Ok(chatId);
+                return Ok(match.UserName);
             }
             return BadRequest("Email not found");
         }

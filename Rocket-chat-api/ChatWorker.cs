@@ -18,19 +18,18 @@ namespace Rocket_chat_api
         public int AddChat(ICollection<User> users)
         {
 
-            //TODO verify that such chat doesnt exist yet
+            //TODO verify that chat with same members does not exist yet
             
             var chatToAdd = new Chat();
             _context.Chats.Add(chatToAdd);
             
             foreach (var user in users)
-            { 
+            {
                 _context.ChatUsers.Add(new ChatUser
                 {
                     User = user,
                     Chat = chatToAdd
                 });
-               
             }
             _context.SaveChanges();
 
