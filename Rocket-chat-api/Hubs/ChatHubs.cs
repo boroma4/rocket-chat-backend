@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Rocket_chat_api.Hubs
 {
-    
-    /// <summary>
-    /// Class to control message sending
-    /// </summary>
     public class ChatHub : Hub
         {
-            public async Task SendMessage(int userId, string message)
+            //TODO send message to specific client
+            public async Task SendDirectMessage(string user, string message)
             {
-                await Clients.All.SendAsync("sendToAll", userId, message);
+                await Clients.All.SendAsync("sendToAll", user, message);
             }
+            
+            //TODO notify clients that have chats with current user that he is online (connected)
         }
 }
