@@ -28,6 +28,13 @@ namespace Rocket_chat_api.Controllers
             _chatWorker = new ChatWorker(_context);
         }
 
+        
+        /// <summary>
+        /// Function to process adding of the new chat with a user.
+        /// </summary>
+        /// <param name="curUserId"> Id of the user who initiates new chat creation</param>
+        /// <param name="emailToAdd"> Email of the person who is to be added to the new chat</param>
+        /// <returns>Chat ID and username to be displayed</returns>
         [HttpGet]
         [Route("/api/addchat")]
         public IActionResult AddChat(int curUserId,string emailToAdd)
@@ -50,6 +57,12 @@ namespace Rocket_chat_api.Controllers
             return BadRequest("Email not found");
         }
 
+        /// <summary>
+        /// A function to get all chats when the user logs in together with their last message.
+        /// Ideally should also return the name of the chat, but it seems our database is not good enough yet.
+        /// </summary>
+        /// <param name="userId">Id of the user that logs in</param>
+        /// <returns>List of Chat+LastMessage elements in JSON notation as a response</returns>
         [HttpGet]
         [Route("/api/getallchats")]
         public IActionResult GetAllChatsWithLastMessage(int userId)
@@ -71,6 +84,20 @@ namespace Rocket_chat_api.Controllers
             Console.Write("Success");
             return Ok(userChatsToReturn);
         }
-        //TODO get messages(all or at least last 10) by chat Id
+
+        /// <summary>
+        /// Method to get last 10 messages for a specific chat.
+        /// Will add actually last messages as soon as we have timestamp on messages and can sort them accordingly
+        /// </summary>
+        /// <param name="chatId">Chat that we are trying to add to</param>
+        /// <returns>List of for a chat</returns>
+        [HttpGet]
+        [Route("/api/getlastmessages")]
+        public IActionResult GetLastTenMessages(int chatId)
+        {
+            List<Message> messages = new List<Message>();
+            messages = _context.Messages.Where(message => message.ChatId == chatId).Take(10).ToList();
+            return Ok(messages);
+        }
     }
 }
