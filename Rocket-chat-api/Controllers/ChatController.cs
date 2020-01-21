@@ -49,7 +49,28 @@ namespace Rocket_chat_api.Controllers
             }
             return BadRequest("Email not found");
         }
+
+        [HttpGet]
+        [Route("/api/getallchats")]
+        public IActionResult GetAllChatsWithLastMessage(int userId)
+        {
+            Console.Write(userId);
+            List<ChatUser> chatsOfUser = new List<ChatUser>();
+            chatsOfUser = _context.ChatUsers.Where(user => user.UserId == userId).ToList();
+            List<UserChat> userChatsToReturn = new List<UserChat>();
+            Console.Write(userChatsToReturn.Count);
+            
+            for (int i = 0; i < chatsOfUser.Count; i++)
+            {
+                userChatsToReturn.Add(new UserChat()
+                {
+                    ChatId = chatsOfUser[i].ChatId,
+                    LastMessage = _context.Messages.FirstOrDefault(message => message.ChatId == chatsOfUser[i].ChatId)
+                });
+            }
+            Console.Write("Success");
+            return Ok(userChatsToReturn);
+        }
         //TODO get messages(all or at least last 10) by chat Id
-        //TODO get all chatIds + last message by userId
     }
 }
