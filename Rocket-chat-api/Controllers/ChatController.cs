@@ -39,14 +39,13 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/addchat")]
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
-            ChatUser chatUser;
             var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
             
             if (match != null)
             {
                 var curUser = _context.Users.Find(curUserId);
                 
-                chatUser =_chatWorker.AddChat(new List<User>(){curUser,match});
+                var chatUser =_chatWorker.AddChat(new List<User>(){curUser,match});
                 
                 return Ok(new AddChatDto
                 {
@@ -67,10 +66,8 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/getallchats")]
         public IActionResult GetAllChatsWithLastMessage(int userId)
         {
-            Console.Write(userId);
-            List<ChatUser> chatsOfUser = new List<ChatUser>();
-            chatsOfUser = _context.ChatUsers.Where(user => user.UserId == userId).ToList();
-            List<UserChatDTO> userChatsToReturn = new List<UserChatDTO>();
+            var chatsOfUser = _context.ChatUsers.Where(user => user.UserId == userId).ToList();
+            var userChatsToReturn = new List<UserChatDTO>();
             Console.Write(userChatsToReturn.Count);
             
             for (int i = 0; i < chatsOfUser.Count; i++)
@@ -101,9 +98,7 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/getlastmessages")]
         public IActionResult GetLastTenMessages(int chatId)
         {
-            List<Message> messages = new List<Message>();
-            messages = _context.Messages.Where(message => message.ChatId == chatId)
-                .OrderByDescending(message => message.MessageId)
+            var messages = _context.Messages.Where(message => message.ChatId == chatId)
                 .Take(10).ToList();
             return Ok(messages);
         }
