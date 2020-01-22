@@ -7,6 +7,7 @@ using DAL;
 using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Rocket_chat_api.Controllers
@@ -64,7 +65,7 @@ namespace Rocket_chat_api.Controllers
         /// <returns>List of Chat+LastMessage elements in JSON notation as a response</returns>
         [HttpGet]
         [Route("/api/getallchats")]
-        public IActionResult GetAllChatsWithLastMessage(int userId)
+        public async Task<IActionResult> GetAllChatsWithLastMessage(int userId)
         {
             var chatsOfUser = _context.ChatUsers.Where(user => user.UserId == userId).ToList();
             var userChatsToReturn = new List<UserChatDTO>();
@@ -75,11 +76,15 @@ namespace Rocket_chat_api.Controllers
                 var friendId = _context.ChatUsers
                     .Single(user => user.ChatId == chatsOfUser[i].ChatId && user.UserId != userId).UserId;
                 var friendUsername = _context.Users.Find(friendId).UserName;
+
+                //Trying to use LastOrDefault resulted in a crash, using this workaround for now 
+                var msgList = await _context.Messages.Where(message => message.ChatId == chatsOfUser[i].ChatId).ToListAsync();
+                var lastMsg = msgList[^1];
                 
                 userChatsToReturn.Add(new UserChatDTO()
                 {
                     ChatId = chatsOfUser[i].ChatId,
-                    LastMessage = _context.Messages.FirstOrDefault(message => message.ChatId == chatsOfUser[i].ChatId),
+                    LastMessage = lastMsg,
                     FriendUserName = friendUsername
                     
                 });
