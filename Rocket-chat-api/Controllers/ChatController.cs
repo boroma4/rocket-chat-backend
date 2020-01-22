@@ -79,7 +79,7 @@ namespace Rocket_chat_api.Controllers
 
                 //Trying to use LastOrDefault resulted in a crash, using this workaround for now 
                 var msgList = await _context.Messages.Where(message => message.ChatId == chatsOfUser[i].ChatId).ToListAsync();
-                var lastMsg = msgList[^1];
+                Message? lastMsg = msgList.Count > 0 ? msgList[^1] : null;
                 
                 userChatsToReturn.Add(new UserChatDTO()
                 {
