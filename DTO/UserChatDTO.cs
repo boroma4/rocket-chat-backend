@@ -2,9 +2,11 @@
 
 namespace DTO
 {
-    public class UserChat
+    public class UserChatDTO
     {
         public int? ChatId { get; set; }
         public Message? LastMessage { get; set; }
+
+        public string? FriendUserName { get; set; }
     }
 }

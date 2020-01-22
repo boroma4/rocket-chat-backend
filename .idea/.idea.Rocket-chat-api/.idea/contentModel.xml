@@ -50,7 +50,7 @@
             </e>
           </e>
         </e>
-        <e p="UserChat.cs" t="Include" />
+        <e p="UserChatDTO.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Rocket-chat-api" t="IncludeRecursive">

@@ -70,15 +70,21 @@ namespace Rocket_chat_api.Controllers
             Console.Write(userId);
             List<ChatUser> chatsOfUser = new List<ChatUser>();
             chatsOfUser = _context.ChatUsers.Where(user => user.UserId == userId).ToList();
-            List<UserChat> userChatsToReturn = new List<UserChat>();
+            List<UserChatDTO> userChatsToReturn = new List<UserChatDTO>();
             Console.Write(userChatsToReturn.Count);
             
             for (int i = 0; i < chatsOfUser.Count; i++)
             {
-                userChatsToReturn.Add(new UserChat()
+                var friendId = _context.ChatUsers
+                    .Single(user => user.ChatId == chatsOfUser[i].ChatId && user.UserId != userId).UserId;
+                var friendUsername = _context.Users.Find(friendId).UserName;
+                
+                userChatsToReturn.Add(new UserChatDTO()
                 {
                     ChatId = chatsOfUser[i].ChatId,
-                    LastMessage = _context.Messages.FirstOrDefault(message => message.ChatId == chatsOfUser[i].ChatId)
+                    LastMessage = _context.Messages.FirstOrDefault(message => message.ChatId == chatsOfUser[i].ChatId),
+                    FriendUserName = friendUsername
+                    
                 });
             }
             Console.Write("Success");
@@ -96,7 +102,9 @@ namespace Rocket_chat_api.Controllers
         public IActionResult GetLastTenMessages(int chatId)
         {
             List<Message> messages = new List<Message>();
-            messages = _context.Messages.Where(message => message.ChatId == chatId).Take(10).ToList();
+            messages = _context.Messages.Where(message => message.ChatId == chatId)
+                .OrderByDescending(message => message.MessageId)
+                .Take(10).ToList();
             return Ok(messages);
         }
     }
