@@ -37,20 +37,20 @@ namespace Rocket_chat_api.Hubs
             /// Might be reworked to be fully operating the process
             /// of new chat creation.
             /// </summary>
-            /// <param name="emailToAdd">an email that is entered when we add the user as a friend</param>
+            /// <param name="chatId">id of created chat</param>
             /// <param name="currentUserId">id of the user, who is creating a new chat</param>
             /// <param name="newChat">the chat object itself</param>
             /// <returns></returns>
-            public async Task NewWebSocketChatCreated(string emailToAdd, int currentUserId, object newChat)
+            /// current user id was there for some reason 
+            public async Task ChatWithUserWasCreated(int currentUserId,int chatId, object newChat)
             {
                 var userToAddId = -1;
-                var userToAdd = _context.Logins.SingleOrDefault(login => login.Email.Equals(emailToAdd));
-                if (userToAdd != null)
+                var chatuserToAdd = _context.ChatUsers.SingleOrDefault(ch => ch.UserId != currentUserId && ch.ChatId == chatId);
+                if (chatuserToAdd != null)
                 {
-                    userToAddId = userToAdd.LoginId;
-                    userToAddId = _context.Users.Single(user => user.Login.LoginId == userToAddId).UserId;
+                    userToAddId = chatuserToAdd.UserId;
                 }
-                await Clients.All.SendAsync("getChat",newChat);
+                await Clients.All.SendAsync("getChat",userToAddId,newChat);
             }
 
             

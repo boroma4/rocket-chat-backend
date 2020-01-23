@@ -9,6 +9,7 @@ using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -41,18 +42,20 @@ namespace Rocket_chat_api.Controllers
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
             var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
+            var curUser = _context.Users.Find(curUserId);
+
             
-            if (match != null)
+            if (match != null && curUser != null)
             {
-                var curUser = _context.Users.Find(curUserId);
                 
                 var chatUser =_chatWorker.AddChat(new List<User>(){curUser,match});
                 
-                return Ok(new AddChatDto
+                var newChatDto = new AddChatDto
                 {
-                    ChatId = chatUser.ChatId,
-                    UserName = chatUser.User.UserName
-                });
+                    ChatId = chatUser.ChatId, UserName = chatUser.User.UserName
+                };
+
+                return Ok(newChatDto);
             }
             return BadRequest("Email not found");
         }
