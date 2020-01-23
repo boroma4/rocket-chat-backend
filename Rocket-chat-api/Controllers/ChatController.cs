@@ -104,7 +104,10 @@ namespace Rocket_chat_api.Controllers
         public IActionResult GetLastTenMessages(int chatId)
         {
             var messages = _context.Messages.Where(message => message.ChatId == chatId)
-                .Take(10).ToList();
+                .OrderByDescending(message => message.MessageId)
+                .Take(10)
+                .OrderBy(message => message.MessageId)
+                .ToList();
             return Ok(messages);
         }
     }

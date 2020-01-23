@@ -80,6 +80,8 @@
         <e p="Rocket-chat-api.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
         <e p="users.db" t="Include" />
+        <e p="users.db-shm" t="Include" />
+        <e p="users.db-wal" t="Include" />
       </e>
       <e p="Rocket-chat-api.sln" t="IncludeFlat" />
     </e>

@@ -30,7 +30,7 @@ namespace Rocket_chat_api.Hubs
                 await _context.SaveChangesAsync();
 
             }
-            
+
             
             
             //TODO notify clients that have chats with current user that he is online (connected)
