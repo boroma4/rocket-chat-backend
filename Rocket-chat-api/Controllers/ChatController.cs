@@ -95,20 +95,35 @@ namespace Rocket_chat_api.Controllers
 
         /// <summary>
         /// Method to get last 10 messages for a specific chat.
-        /// Will add actually last messages as soon as we have timestamp on messages and can sort them accordingly
+        /// Will skip those that are already present in chat.
         /// </summary>
         /// <param name="chatId">Chat that we are trying to add to</param>
+        /// <param name="totalMessagesLoaded">id for checking the last message</param>
         /// <returns>List of for a chat</returns>
         [HttpGet]
         [Route("/api/getlastmessages")]
-        public IActionResult GetLastTenMessages(int chatId)
+        public IActionResult GetLastTenMessages(int chatId, int totalMessagesLoaded)
         {
-            var messages = _context.Messages.Where(message => message.ChatId == chatId)
-                .OrderByDescending(message => message.MessageId)
-                .Take(10)
-                .OrderBy(message => message.MessageId)
-                .ToList();
-            return Ok(messages);
+            if (totalMessagesLoaded>10)
+            {
+                var messages = _context.Messages.Where(message => message.ChatId == chatId)
+                    .OrderByDescending(message => message.MessageId)
+                    .Skip(totalMessagesLoaded)
+                    .Take(10)
+                    .OrderBy(message => message.MessageId)
+                    .ToList();
+                return Ok();
+            }
+            else
+            {
+                var messages = _context.Messages.Where(message => message.ChatId == chatId)
+                    .OrderByDescending(message => message.MessageId)
+                    .Take(10)
+                    .OrderBy(message => message.MessageId)
+                    .ToList();
+                return Ok(messages);
+            }
+            
         }
     }
 }

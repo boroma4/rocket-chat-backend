@@ -31,6 +31,28 @@ namespace Rocket_chat_api.Hubs
 
             }
 
+            /// <summary>
+            /// A function to create a new Chat with a user that was added as a friend.
+            /// Works as event handler for Receiving user.
+            /// Might be reworked to be fully operating the process
+            /// of new chat creation.
+            /// </summary>
+            /// <param name="emailToAdd">an email that is entered when we add the user as a friend</param>
+            /// <param name="currentUserId">id of the user, who is creating a new chat</param>
+            /// <param name="newChat">the chat object itself</param>
+            /// <returns></returns>
+            public async Task NewWebSocketChatCreated(string emailToAdd, int currentUserId, object newChat)
+            {
+                var userToAddId = -1;
+                var userToAdd = _context.Logins.SingleOrDefault(login => login.Email.Equals(emailToAdd));
+                if (userToAdd != null)
+                {
+                    userToAddId = userToAdd.LoginId;
+                    userToAddId = _context.Users.Single(user => user.Login.LoginId == userToAddId).UserId;
+                }
+                await Clients.All.SendAsync("getChat",newChat);
+            }
+
             
             
             //TODO notify clients that have chats with current user that he is online (connected)
