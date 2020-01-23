@@ -104,7 +104,7 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/getlastmessages")]
         public IActionResult GetLastTenMessages(int chatId, int totalMessagesLoaded)
         {
-            if (totalMessagesLoaded>10)
+            if (totalMessagesLoaded > 10)
             {
                 var messages = _context.Messages.Where(message => message.ChatId == chatId)
                     .OrderByDescending(message => message.MessageId)
@@ -112,7 +112,7 @@ namespace Rocket_chat_api.Controllers
                     .Take(10)
                     .OrderBy(message => message.MessageId)
                     .ToList();
-                return Ok();
+                return Ok(messages);
             }
             else
             {
@@ -123,7 +123,6 @@ namespace Rocket_chat_api.Controllers
                     .ToList();
                 return Ok(messages);
             }
-            
         }
     }
 }
