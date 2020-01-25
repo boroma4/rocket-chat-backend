@@ -39,12 +39,12 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/addchat")]
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
-            var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
+            var match =_context.Users.SingleOrDefault(u => u.Login.Email.Equals(emailToAdd));
             
             //Checking if user is not adding himself 
             if (match.UserId == curUserId)
             {
-                return Ok();
+                return BadRequest(new {text = "You cannot add yourself,pls.."});
             }
             
             var curUser = _context.Users.Find(curUserId);
@@ -58,12 +58,10 @@ namespace Rocket_chat_api.Controllers
                 var userListPerChat = ChatUserForASpecificChatFinder(t.ChatId);
                 if (userListPerChat.Any(user => user.UserId == match.UserId))
                 {
-                    return Ok();
+                    return BadRequest(new {text = "You already have this guy..."});
                 }
             }
-            
 
-            
             if (match != null && curUser != null)
             {
                 
@@ -76,7 +74,7 @@ namespace Rocket_chat_api.Controllers
 
                 return Ok(newChatDto);
             }
-            return BadRequest("Email not found");
+            return BadRequest(new{text = "Email not found"});
         }
 
         /// <summary>
@@ -111,7 +109,6 @@ namespace Rocket_chat_api.Controllers
                     
                 });
             }
-            Console.Write("Success");
             return Ok(userChatsToReturn);
         }
 
@@ -141,6 +138,8 @@ namespace Rocket_chat_api.Controllers
         /// </summary>
         /// <param name="chatId">A chat in question</param>
         /// <returns> List of Users</returns>
+        ///
+        /// Move to ChatWorker pls
         [NonAction]
         private List<ChatUser> ChatUserForASpecificChatFinder(int chatId)
         {
