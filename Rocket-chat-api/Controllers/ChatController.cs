@@ -36,13 +36,34 @@ namespace Rocket_chat_api.Controllers
         /// </summary>
         /// <param name="curUserId"> Id of the user who initiates new chat creation</param>
         /// <param name="emailToAdd"> Email of the person who is to be added to the new chat</param>
-        /// <returns>Chat ID and username to be displayed</returns>
+        /// <returns>Chat ID and username to be displayed. If there re any logical errors, nothing is returned</returns>
         [HttpGet]
         [Route("/api/addchat")]
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
             var match =_context.Users.Single(u => u.Login.Email.Equals(emailToAdd));
+            
+            //Checking if user is not adding himself 
+            if (match.UserId == curUserId)
+            {
+                return Ok();
+            }
+            
             var curUser = _context.Users.Find(curUserId);
+            
+            
+            var chatsCurrentUserHas = _context.ChatUsers.Where(user => user.UserId == curUserId).ToList();
+            
+            // Loop looking for occurrences, when we already have a same chat ID with the user that we are about to add
+            foreach (var t in chatsCurrentUserHas)
+            {
+                var userListPerChat = ChatUserForASpecificChatFinder(t.ChatId);
+                if (userListPerChat.Any(user => user.UserId == match.UserId))
+                {
+                    return Ok();
+                }
+            }
+            
 
             
             if (match != null && curUser != null)
@@ -107,8 +128,6 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/getlastmessages")]
         public IActionResult GetLastTenMessages(int chatId, int totalMessagesLoaded)
         {
-            if (totalMessagesLoaded > 10)
-            {
                 var messages = _context.Messages.Where(message => message.ChatId == chatId)
                     .OrderByDescending(message => message.MessageId)
                     .Skip(totalMessagesLoaded)
@@ -116,16 +135,19 @@ namespace Rocket_chat_api.Controllers
                     .OrderBy(message => message.MessageId)
                     .ToList();
                 return Ok(messages);
-            }
-            else
-            {
-                var messages = _context.Messages.Where(message => message.ChatId == chatId)
-                    .OrderByDescending(message => message.MessageId)
-                    .Take(10)
-                    .OrderBy(message => message.MessageId)
-                    .ToList();
-                return Ok(messages);
-            }
+            
+        }
+
+        /// <summary>
+        /// A helper function that returns ChatUser dependency associated with a specific chat
+        /// </summary>
+        /// <param name="chatId">A chat in question</param>
+        /// <returns> List of Users</returns>
+        [NonAction]
+        public List<ChatUser> ChatUserForASpecificChatFinder(int chatId)
+        {
+            var chatUserList = _context.ChatUsers.Where(user => user.ChatId == chatId).ToList();
+            return chatUserList;
         }
     }
 }
