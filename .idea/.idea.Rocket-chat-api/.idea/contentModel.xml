@@ -15,6 +15,8 @@
           <e p="20200120153137_InitialDbCreation.Designer.cs" t="Include" />
           <e p="20200125174354_SecondDbCreation.cs" t="Include" />
           <e p="20200125174354_SecondDbCreation.Designer.cs" t="Include" />
+          <e p="20200125183830_25012020DbCreation.cs" t="Include" />
+          <e p="20200125183830_25012020DbCreation.Designer.cs" t="Include" />
           <e p="AppDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -31,7 +33,9 @@
         <e p="ChatUser.cs" t="Include" />
         <e p="Domain.csproj" t="IncludeRecursive" />
         <e p="Login.cs" t="Include" />
+        <e p="MediaType.cs" t="Include" />
         <e p="Message.cs" t="Include" />
+        <e p="MessageMedia.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
@@ -82,6 +86,8 @@
         <e p="Rocket-chat-api.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
         <e p="users.db" t="Include" />
+        <e p="users.db-shm" t="Include" />
+        <e p="users.db-wal" t="Include" />
       </e>
       <e p="Rocket-chat-api.sln" t="IncludeFlat" />
     </e>

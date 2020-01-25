@@ -16,6 +16,10 @@ namespace Domain
         
         public DbSet<ChatUser> ChatUsers { get; set; } = default!;
 
+        public DbSet<MediaType> MediaTypes { get; set; } = default!;
+
+        public DbSet<MessageMedia> MessageMedias { get; set; } = default!;
+
 
         public AppDbContext(DbContextOptions options) : base(options)
         {
