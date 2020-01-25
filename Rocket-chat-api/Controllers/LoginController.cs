@@ -33,7 +33,7 @@ namespace Rocket_chat_api.Controllers
         public IActionResult Login(Login loginData)
         {
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password))
-             return BadRequest("Invalid data");
+             return BadRequest(new {text ="Invalid data"});
 
             var match = _context.Logins.Where(l=>l.Email.Equals(loginData.Email)).ToList();
 
@@ -45,7 +45,7 @@ namespace Rocket_chat_api.Controllers
                     return Ok(user);
                 }
             }
-            return BadRequest("Wrong email or password");
+            return BadRequest(new {text = "Wrong email or password"});
         }
         
         [HttpPost]
@@ -53,11 +53,11 @@ namespace Rocket_chat_api.Controllers
         public async Task<IActionResult> RegisterUser(Login loginData)
         {
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password)|| string.IsNullOrEmpty(loginData.UserName))
-                return BadRequest("Invalid data.");
+                return BadRequest(new{text = "Invalid data."});
 
             if (_context.Users.Any(u => u.Login.Email.Equals(loginData.Email)))
             {
-                return BadRequest("Email already exists");
+                return BadRequest( new {text = "Email already exists"});
             }
             
             loginData.Password = PasswordSecurity.Encrypt(loginData.Password);
@@ -67,7 +67,6 @@ namespace Rocket_chat_api.Controllers
                 Login = loginData,
                 UserName = loginData.UserName
             };
-            _logger.LogDebug("asa");
             
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
