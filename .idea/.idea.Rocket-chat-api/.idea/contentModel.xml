@@ -13,6 +13,8 @@
         <e p="Migrations" t="Include">
           <e p="20200120153137_InitialDbCreation.cs" t="Include" />
           <e p="20200120153137_InitialDbCreation.Designer.cs" t="Include" />
+          <e p="20200125174354_SecondDbCreation.cs" t="Include" />
+          <e p="20200125174354_SecondDbCreation.Designer.cs" t="Include" />
           <e p="AppDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -80,8 +82,6 @@
         <e p="Rocket-chat-api.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
         <e p="users.db" t="Include" />
-        <e p="users.db-shm" t="Include" />
-        <e p="users.db-wal" t="Include" />
       </e>
       <e p="Rocket-chat-api.sln" t="IncludeFlat" />
     </e>

@@ -1,4 +1,6 @@
-﻿namespace DAL
+﻿using System;
+
+namespace DAL
 {
     public class Message
     {
@@ -7,6 +9,7 @@
             UserId = userId;
             ChatId = chatId;
             MessageText = messageText;
+            CreatedDate = DateTime.Now;
 
         }
 
@@ -17,5 +20,8 @@
         public int UserId { get; set; } = default!;
 
         public string MessageText { get; set; } = default!;
+
+        public DateTime CreatedDate { get; set; } = default!;
+
     }
 }

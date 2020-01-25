@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -129,10 +127,10 @@ namespace Rocket_chat_api.Controllers
         public IActionResult GetLastTenMessages(int chatId, int totalMessagesLoaded)
         {
                 var messages = _context.Messages.Where(message => message.ChatId == chatId)
-                    .OrderByDescending(message => message.MessageId)
+                    .OrderByDescending(message => message.CreatedDate)
                     .Skip(totalMessagesLoaded)
                     .Take(10)
-                    .OrderBy(message => message.MessageId)
+                    .OrderBy(message => message.CreatedDate)
                     .ToList();
                 return Ok(messages);
             
@@ -144,7 +142,7 @@ namespace Rocket_chat_api.Controllers
         /// <param name="chatId">A chat in question</param>
         /// <returns> List of Users</returns>
         [NonAction]
-        public List<ChatUser> ChatUserForASpecificChatFinder(int chatId)
+        private List<ChatUser> ChatUserForASpecificChatFinder(int chatId)
         {
             var chatUserList = _context.ChatUsers.Where(user => user.ChatId == chatId).ToList();
             return chatUserList;
