@@ -79,6 +79,13 @@ namespace Rocket_chat_api.Controllers
             return BadRequest(new{text = "Email not found"});
         }
 
+        [HttpGet]
+        [Route("/api")]
+        public  IActionResult CheckApi()
+        {
+            return Ok("I am up!");
+        }
+
         /// <summary>
         /// A function to get all chats when the user logs in together with their last message.
         /// Ideally should also return the name of the chat, but it seems our database is not good enough yet.

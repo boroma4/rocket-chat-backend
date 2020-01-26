@@ -39,7 +39,7 @@ namespace Rocket_chat_api
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:3000");
+                    .WithOrigins("https://boroma4.github.io");
             }));
         }
 

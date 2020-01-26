@@ -52,6 +52,8 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/register")]
         public async Task<IActionResult> RegisterUser(Login loginData)
         {
+            _context.Database.EnsureCreated();
+            
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password)|| string.IsNullOrEmpty(loginData.UserName))
                 return BadRequest(new{text = "Invalid data."});
 
