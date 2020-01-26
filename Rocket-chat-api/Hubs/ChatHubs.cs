@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
@@ -19,16 +20,18 @@ namespace Rocket_chat_api.Hubs
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
                 Console.Write("First");
-                await Clients.All.SendAsync("sendToAll", userId, chatId, messageText);
                 Message newMessage = new Message(userId,chatId,messageText);
-                Console.Write(messageText);
-                if (!_context.Chats.Any(chat => chat.ChatId == chatId))
+                try
                 {
-                    _context.Chats.Add(new Chat(){ChatId = chatId});
-                }
-                _context.Messages.Add(newMessage);
-                await _context.SaveChangesAsync();
+                    _context.Messages.Add(newMessage);
+                    await _context.SaveChangesAsync();
+                    await Clients.All.SendAsync("sendToAll", userId, chatId, messageText);
 
+                }
+                catch(Exception)
+                {
+                    await Clients.All.SendAsync("sendToAll", userId, chatId, "Not saved: "+messageText);
+                }
             }
 
             /// <summary>
@@ -53,7 +56,25 @@ namespace Rocket_chat_api.Hubs
                 await Clients.All.SendAsync("getChat",userToAddId,newChat);
             }
 
-            
+            /// <summary>
+            /// A function that notifies all the clients that a certain user went online or offline.
+            /// Chat Ids are sent to check whether receiver was present in client's chats.
+            /// </summary>
+            /// <param name="online">bool that shows whether user should be put online or offline</param>
+            /// <param name="userId">id of the user, who is going online or offline</param>
+            /// <returns></returns>
+            public async Task UserWentOfflineOrOnline(bool online,int userId)
+            {
+                var currentUser = _context.Users.Find(userId);
+                var userChats = _context.ChatUsers.Where(ch => ch.UserId == userId);
+                var chatIdList = userChats.Select(userChat => userChat.ChatId).ToList();
+                
+                currentUser.IsOnline = online;
+                await Clients.All.SendAsync("UserWentOfflineOrOnline",online,userId,chatIdList);
+                
+                _context.Users.Update(currentUser);
+                await _context.SaveChangesAsync();
+            }
             
             //TODO notify clients that have chats with current user that he is online (connected)
         }
