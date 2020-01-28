@@ -32,6 +32,7 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/login")]
         public IActionResult Login(Login loginData)
         {
+            Console.Write("here");
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password))
              return BadRequest(new {text ="Invalid data"});
 

@@ -42,6 +42,10 @@ namespace Rocket_chat_api.Controllers
         public IActionResult AddChat(int curUserId,string emailToAdd)
         {
             var match =_context.Users.SingleOrDefault(u => u.Login.Email.Equals(emailToAdd));
+            if (match == null)
+            {
+                return BadRequest(new {text = "No one with such email exists bro..."});
+            }
             
             //Checking if user is not adding himself 
             if (match.UserId == curUserId)

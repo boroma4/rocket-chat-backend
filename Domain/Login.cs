@@ -9,7 +9,7 @@ namespace DAL
 
         [MinLength(2)]
         [MaxLength(64)]
-        public string UserName { get; set; } = default!;
+        public string? UserName { get; set; } 
         [MinLength(5)]
         [MaxLength(64)]
         public string Email { get; set; } = default!;
