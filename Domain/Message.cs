@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL
 {
@@ -19,6 +20,8 @@ namespace DAL
         //sender
         public int UserId { get; set; } = default!;
 
+        [MinLength(1)]
+        [MaxLength(256)]
         public string MessageText { get; set; } = default!;
 
         public DateTime CreatedDate { get; set; } = default!;

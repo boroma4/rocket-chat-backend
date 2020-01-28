@@ -1,4 +1,6 @@
-﻿namespace DAL
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DAL
 {
     public class MessageMedia
     {
@@ -9,7 +11,9 @@
         public int MediaTypeId { get; set; } = default!;
 
         public byte[] File { get; set; } = default!;
-
+        
+        [MinLength(3)]
+        [MaxLength(64)]
         public string FileName { get; set; } = default!;
     }
 }
