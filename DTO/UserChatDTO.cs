@@ -8,5 +8,8 @@ namespace DTO
         public Message? LastMessage { get; set; }
 
         public string? FriendUserName { get; set; }
+
+        public bool? IsOnline { get; set; }
     }
+    
 }

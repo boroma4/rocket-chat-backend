@@ -8,6 +8,7 @@ using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Rocket_chat_api.Hubs;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -20,6 +21,7 @@ namespace Rocket_chat_api.Controllers
         private readonly AppDbContext _context;
         
         private ChatWorker _chatWorker;
+        
         
         public ChatController(ILogger<LoginController> logger,AppDbContext context)
         {
@@ -91,12 +93,14 @@ namespace Rocket_chat_api.Controllers
             var userChatsToReturn = new List<UserChatDTO>();
             Console.Write(userChatsToReturn.Count);
             
+            
             for (int i = 0; i < chatsOfUser.Count; i++)
             {
                 var friendId = _context.ChatUsers
                     .Single(user => user.ChatId == chatsOfUser[i].ChatId && user.UserId != userId).UserId;
-                var friendUsername = _context.Users.Find(friendId).UserName;
-
+                
+                var friend = _context.Users.Find(friendId);
+                
                 //Trying to use LastOrDefault resulted in a crash, using this workaround for now 
                 var msgList = await _context.Messages.Where(message => message.ChatId == chatsOfUser[i].ChatId).ToListAsync();
                 Message? lastMsg = msgList.Count > 0 ? msgList[^1] : null;
@@ -105,8 +109,8 @@ namespace Rocket_chat_api.Controllers
                 {
                     ChatId = chatsOfUser[i].ChatId,
                     LastMessage = lastMsg,
-                    FriendUserName = friendUsername
-                    
+                    FriendUserName = friend.UserName,
+                    IsOnline = friend.IsOnline
                 });
             }
             return Ok(userChatsToReturn);
@@ -131,6 +135,27 @@ namespace Rocket_chat_api.Controllers
                     .ToList();
                 return Ok(messages);
             
+        }
+        /// <summary>
+        /// Method that sets a user as offline in the database.
+        /// </summary>
+        /// <param name="userId">Id of the user that went offline</param>
+        [HttpGet]
+        [Route("/api/disconnect")]
+        public IActionResult UserDisconnected(int userId)
+        {
+            var user = _context.Users.Find(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                user.IsOnline = false;
+                _context.Update(user); 
+                _context.SaveChanges();
+                return Ok();
+            }
         }
 
         /// <summary>

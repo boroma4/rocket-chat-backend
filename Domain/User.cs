@@ -14,6 +14,8 @@ namespace DAL
 
         public Login Login { get; set; } = default!;
 
+        public bool IsOnline { get; set; } = default!;
+
         public ICollection<ChatUser>? UserChats { get; set; }
     }
 }
