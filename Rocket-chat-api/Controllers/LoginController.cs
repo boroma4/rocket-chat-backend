@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DAL;
 using Domain;
+using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -32,19 +33,26 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/login")]
         public IActionResult Login(Login loginData)
         {
-            Console.Write("here");
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password))
              return BadRequest(new {text ="Invalid data"});
 
-            var match = _context.Logins.Where(l=>l.Email.Equals(loginData.Email)).ToList();
+            var match = _context.Logins.SingleOrDefault(l=>l.Email.Equals(loginData.Email));
 
-            if (match.Count == 1)
+            if (match == null) return BadRequest(new {text = "Wrong email or password"});
+            
+            if (!PasswordSecurity.CheckPassword(match.Password, loginData.Password))
+                return BadRequest(new {text = "Wrong email or password"});
+                
+            var user = _context.Users.SingleOrDefault(u => u.Login.Email.Equals(match.Email));
+            //IsOnline will be set on socket connection
+            if (user != null)
             {
-                if (PasswordSecurity.CheckPassword(match[0].Password, loginData.Password))
+                return Ok(new UserDTO
                 {
-                    var user = _context.Users.Where(u => u.Login.Email.Equals(match[0].Email));
-                    return Ok(user);
-                }
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    IsOnline = false
+                });
             }
             return BadRequest(new {text = "Wrong email or password"});
         }
@@ -71,8 +79,14 @@ namespace Rocket_chat_api.Controllers
             
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
-            
-            return Ok(newUser);
+            //IsOnline will be set on socket connection
+
+            return Ok(new UserDTO
+            {
+                UserId = newUser.UserId,
+                UserName = newUser.UserName,
+                IsOnline = false
+            });
         }
     }
 }
