@@ -3,6 +3,7 @@
   <component name="ContentModelStore">
     <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\consoles\db" t="IncludeRecursive" />
     <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\scratches" t="IncludeRecursive" />
     <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\extResources" t="IncludeRecursive" />
     <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Rocket-chat-api.1570232835.00" t="ExcludeRecursive" />
     <e p="C:\Users\Artem Grukhal\Desktop\Rocket_Chat\rocket-chat-backend" t="IncludeFlat">
@@ -51,6 +52,7 @@
         <e p="AddChatDTO.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="DTO.csproj" t="IncludeRecursive" />
+        <e p="EncryptedMessage.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
@@ -59,6 +61,8 @@
           </e>
         </e>
         <e p="UserChatDTO.cs" t="Include" />
+        <e p="UserDTO.cs" t="Include" />
+        <e p="UserStatusDTO.cs" t="Include" />
       </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="Rocket-chat-api" t="IncludeRecursive">
@@ -68,7 +72,9 @@
         <e p="ChatWorker.cs" t="Include" />
         <e p="Controllers" t="Include">
           <e p="ChatController.cs" t="Include" />
+          <e p="CryptoController.cs" t="Include" />
           <e p="LoginController.cs" t="Include" />
+          <e p="StatusController.cs" t="Include" />
         </e>
         <e p="Hubs" t="Include">
           <e p="ChatHubs.cs" t="Include" />

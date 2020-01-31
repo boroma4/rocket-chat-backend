@@ -117,6 +117,8 @@ namespace Rocket_chat_api.Controllers
                     IsOnline = friend.IsOnline
                 });
             }
+            userChatsToReturn = userChatsToReturn.OrderByDescending(dto => dto.LastMessage.CreatedDate).ToList();
+
             return Ok(userChatsToReturn);
         }
 
@@ -140,27 +142,7 @@ namespace Rocket_chat_api.Controllers
                 return Ok(messages);
             
         }
-        /// <summary>
-        /// Method that sets a user as offline in the database.
-        /// </summary>
-        /// <param name="userId">Id of the user that went offline</param>
-        [HttpGet]
-        [Route("/api/disconnect")]
-        public IActionResult UserDisconnected(int userId)
-        {
-            var user = _context.Users.Find(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                user.IsOnline = false;
-                _context.Update(user); 
-                _context.SaveChanges();
-                return Ok();
-            }
-        }
+        
 
         /// <summary>
         /// A helper function that returns ChatUser dependency associated with a specific chat
