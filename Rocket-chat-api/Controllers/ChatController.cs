@@ -75,7 +75,7 @@ namespace Rocket_chat_api.Controllers
                 
                 var newChatDto = new AddChatDto
                 {
-                    ChatId = chatUser.ChatId, UserName = chatUser.User.UserName
+                    ChatId = chatUser.ChatId, UserName = chatUser.User.UserName,FriendImageUrl = chatUser.User.ImageUrl
                 };
 
                 return Ok(newChatDto);

@@ -56,7 +56,8 @@ namespace Rocket_chat_api.Controllers
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
-                    IsOnline = false
+                    IsOnline = false,
+                    ImageUrl = user.ImageUrl
                 });
             }
             return BadRequest(new {text = "Wrong email or password"});
@@ -146,7 +147,8 @@ namespace Rocket_chat_api.Controllers
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
-                    IsOnline = false
+                    IsOnline = false,
+                    ImageUrl = user.ImageUrl
                 });
             }
             else
@@ -166,7 +168,8 @@ namespace Rocket_chat_api.Controllers
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
-                    IsOnline = false
+                    IsOnline = false,
+                    ImageUrl = user.ImageUrl
                 });
 
             }

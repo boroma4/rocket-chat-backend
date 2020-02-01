@@ -7,5 +7,8 @@
         public int? UserId { get; set; }
         
         public bool? IsOnline { get; set; }
+        
+        public string? ImageUrl { get; set; }
+
     }
 }
