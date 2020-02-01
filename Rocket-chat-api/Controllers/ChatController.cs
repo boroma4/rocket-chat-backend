@@ -114,7 +114,8 @@ namespace Rocket_chat_api.Controllers
                     ChatId = chatsOfUser[i].ChatId,
                     LastMessage = lastMsg,
                     FriendUserName = friend.UserName,
-                    IsOnline = friend.IsOnline
+                    IsOnline = friend.IsOnline,
+                    FriendImageUrl = friend.ImageUrl
                 });
             }
             userChatsToReturn = userChatsToReturn.OrderByDescending(dto => dto.LastMessage.CreatedDate).ToList();
