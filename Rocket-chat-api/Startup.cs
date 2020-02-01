@@ -39,8 +39,9 @@ namespace Rocket_chat_api
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("http://localhost:3000");
+                    .WithOrigins("https://localhost:3000","http://localhost:3000","https://boroma4.github.io");
             }));
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,7 +51,7 @@ namespace Rocket_chat_api
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();

@@ -17,5 +17,14 @@ namespace DAL
         public bool IsOnline { get; set; } = default!;
 
         public ICollection<ChatUser>? UserChats { get; set; }
+
+        [MinLength(5)]
+        [MaxLength(128)]
+        public string? ImageUrl { get; set; }
+        
+        
+        [MinLength(5)]
+        [MaxLength(64)]
+        public string? WebSocketId { get; set; }
     }
 }
