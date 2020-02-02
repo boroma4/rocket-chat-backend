@@ -121,10 +121,10 @@ namespace Rocket_chat_api.Controllers
 
             var emptyChats = new List<UserChatDTO>();
             
-            if (userChatsToReturn.Any(dto => dto.LastMessage.Equals(null)))
+            if (userChatsToReturn.Any(dto => dto.LastMessage == null))
             { 
-                emptyChats = userChatsToReturn.Where(dto => dto.LastMessage.Equals(null)).ToList();
-                userChatsToReturn.RemoveAll(dto => dto.LastMessage.Equals(null));
+                emptyChats = userChatsToReturn.Where(dto => dto.LastMessage == null).ToList();
+                userChatsToReturn.RemoveAll(dto => dto.LastMessage == null);
             }
 
             userChatsToReturn = userChatsToReturn.OrderByDescending(dto => dto.LastMessage.CreatedDate).ToList();
