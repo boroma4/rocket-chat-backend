@@ -118,7 +118,21 @@ namespace Rocket_chat_api.Controllers
                     FriendImageUrl = friend.ImageUrl
                 });
             }
+
+            var emptyChats = new List<UserChatDTO>();
+            
+            if (userChatsToReturn.Any(dto => dto.LastMessage.Equals(null)))
+            { 
+                emptyChats = userChatsToReturn.Where(dto => dto.LastMessage.Equals(null)).ToList();
+                userChatsToReturn.RemoveAll(dto => dto.LastMessage.Equals(null));
+            }
+
             userChatsToReturn = userChatsToReturn.OrderByDescending(dto => dto.LastMessage.CreatedDate).ToList();
+            
+            if (emptyChats.Count != 0)
+            {
+                userChatsToReturn.AddRange(emptyChats);
+            }
 
             return Ok(userChatsToReturn);
         }

@@ -20,6 +20,8 @@
           <e p="20200125183830_25012020DbCreation.Designer.cs" t="Include" />
           <e p="20200126201154_WithOnlineStatus.cs" t="Include" />
           <e p="20200126201154_WithOnlineStatus.Designer.cs" t="Include" />
+          <e p="20200131222141_ImageUrl.cs" t="Include" />
+          <e p="20200131222141_ImageUrl.Designer.cs" t="Include" />
           <e p="AppDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -53,6 +55,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="DTO.csproj" t="IncludeRecursive" />
         <e p="EncryptedMessage.cs" t="Include" />
+        <e p="GoogleTokenDTO.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
