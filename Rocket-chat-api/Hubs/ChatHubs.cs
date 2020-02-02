@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using DAL;
 using Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace Rocket_chat_api.Hubs
 {
@@ -20,7 +21,7 @@ namespace Rocket_chat_api.Hubs
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
                 Console.Write("First");
-                Message newMessage = new Message(userId,chatId,messageText);
+                var newMessage = new Message(userId,chatId,messageText);
                 try
                 {
                     _context.Messages.Add(newMessage);
@@ -71,11 +72,42 @@ namespace Rocket_chat_api.Hubs
                 
                 currentUser.IsOnline = online;
                 await Clients.All.SendAsync("UserWentOfflineOrOnline",online,userId,chatIdList);
-                
                 _context.Users.Update(currentUser);
                 await _context.SaveChangesAsync();
             }
-            
-            //TODO notify clients that have chats with current user that he is online (connected)
+
+            /// <summary>
+            /// A function that notifies all the clients that a certain user changed something about him.
+            /// </summary>
+            ///<param name="userId">Id of a user who made changes</param>
+            /// <param name="type">string that shows what exactly the user has changed</param>
+            /// <param name="value">string that shows what value did the user put</param>
+            /// <returns></returns>
+            public async Task UserDataChanged(int userId ,string type, string value)
+            {
+                var user = _context.Users.Find(userId);
+                //if data is broken/incorrect abort changes
+                if (user == null || string.IsNullOrEmpty(type) || string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
+                switch (type)
+                {
+                    case "image":
+                        user.ImageUrl = value;
+                        break;
+                    case "name":
+                        user.UserName = value;
+                        break;
+                }
+                _context.Users.Update(user);
+                
+                var userChatIds = await _context.ChatUsers.Where(cu => cu.UserId == userId)
+                    .Select(cu => cu.ChatId)
+                    .ToListAsync();
+                
+                await Clients.All.SendAsync("UserDataChanged",userId,userChatIds,type,value);
+                await _context.SaveChangesAsync();
+            }
         }
 }
