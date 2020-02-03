@@ -100,7 +100,7 @@ namespace Rocket_chat_api.Controllers
             MailSender.SendEmail(loginData.Email,secretLink);
             await _context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(new {text = "User registered successfully"});
         }
 
         [HttpPost]
@@ -151,6 +151,12 @@ namespace Rocket_chat_api.Controllers
             if (_context.Users.Any(u => u.Login.Email.Equals(email)))
             {
                 var user = _context.Users.Single(u => u.Login.Email.Equals(email));
+                //we dont put our users as verified in the DB
+                //This can still get broken if normal email is registered, but not verified yet
+                if (user.EmailVerified)
+                {
+                    return BadRequest(new {text = "Email already taken."});
+                }
                 return Ok(new UserDTO
                 {
                     UserId = user.UserId,
