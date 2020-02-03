@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Permissions;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -45,13 +46,18 @@ namespace Rocket_chat_api.Controllers
 
             if (match == null) return BadRequest(new {text = "Wrong email or password"});
             
-            if (!PasswordSecurity.CheckPassword(match.Password, loginData.Password))
+            if (!Security.CheckPassword(match.Password, loginData.Password))
                 return BadRequest(new {text = "Wrong email or password"});
                 
             var user = _context.Users.SingleOrDefault(u => u.Login.Email.Equals(match.Email));
+            
             //IsOnline will be set on socket connection
             if (user != null)
             {
+                if (!user.EmailVerified)
+                {
+                    return BadRequest(new {text = "Please verify your email!"});
+                }
                 return Ok(new UserDTO
                 {
                     UserId = user.UserId,
@@ -76,24 +82,25 @@ namespace Rocket_chat_api.Controllers
                 return BadRequest( new {text = "Email already exists"});
             }
             
-            loginData.Password = PasswordSecurity.Encrypt(loginData.Password);
+            loginData.Password = Security.Encrypt(loginData.Password,1000);
+            var secretKey = Security.ComputeSha256Hash(loginData.Email);
+
             
             var newUser = new User()
             {
                 Login = loginData,
-                UserName = loginData.UserName
+                UserName = loginData.UserName,
+                EmailVerified = false,
+                VerificationLink = secretKey
             };
             
             _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
-            //IsOnline will be set on socket connection
 
-            return Ok(new UserDTO
-            {
-                UserId = newUser.UserId,
-                UserName = newUser.UserName,
-                IsOnline = newUser.IsOnline
-            });
+            var secretLink = "https://localhost:5001/api/verify?key=" + secretKey;
+            MailSender.SendEmail(loginData.Email,secretLink);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
         [HttpPost]

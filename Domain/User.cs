@@ -26,5 +26,10 @@ namespace DAL
         [MinLength(5)]
         [MaxLength(64)]
         public string? WebSocketId { get; set; }
+        
+        public bool EmailVerified { get; set; } = default!;
+
+        [MaxLength(64)]
+        public string VerificationLink { get; set; } = default!;
     }
 }

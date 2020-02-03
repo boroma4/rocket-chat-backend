@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Rocket_chat_api
 {
@@ -7,14 +8,14 @@ namespace Rocket_chat_api
     /// <summary>
     /// Class used to hash the password in order for it to be stored in the database
     /// </summary>
-    public  static class PasswordSecurity
+    public  static class Security
     {
-        internal static string Encrypt(string password)
+        internal static string Encrypt(string password,int iterations)
         {
             byte[] salt;
             new RNGCryptoServiceProvider().GetBytes(salt=new byte[16]);
             
-            var pbkdf2 = new Rfc2898DeriveBytes(password,salt,1000);
+            var pbkdf2 = new Rfc2898DeriveBytes(password,salt,iterations);
 
             var hash = pbkdf2.GetBytes(20);
             var hashBytes = new byte[36];
@@ -46,6 +47,21 @@ namespace Rocket_chat_api
 
             return true;
         }
+        internal static string ComputeSha256Hash(string rawData)
+        {
+            // Create a SHA256   
+            using var sha256Hash = SHA256.Create();
+            // ComputeHash - returns byte array  
+            var bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(rawData));  
+  
+            // Convert byte array to a string   
+            var builder = new StringBuilder();  
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }  
+            return builder.ToString();
+        }  
 
     }
 }

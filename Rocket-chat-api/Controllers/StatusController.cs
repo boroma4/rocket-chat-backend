@@ -75,6 +75,25 @@ namespace Rocket_chat_api.Controllers
                 return BadRequest(e);
             }
         }
-        
+        /// <summary>
+        /// Method to verify user's email
+        /// </summary>
+        /// <param name="key"> Secret code generated based of user email</param>
+        /// <returns> Redirects to correct page in front-end</returns>
+        [HttpGet]
+        [Route("api/verify")]
+        public IActionResult VerifyEmail(string key)
+        {
+            var verifiedUser = _context.Users.SingleOrDefault(u => u.VerificationLink ==  key);
+
+            if (verifiedUser != null)
+            {
+                verifiedUser.EmailVerified = true;
+                _context.Users.Update(verifiedUser);
+                _context.SaveChanges();
+                return Redirect("http://localhost:3000/rocket-chat-front/#/vsuccess");
+            }
+            return Redirect("http://localhost:3000/rocket-chat-front/#/vfailed");
+        }
     }
 }
