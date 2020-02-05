@@ -64,7 +64,7 @@ namespace Rocket_chat_api.Hubs
             /// <param name="online">bool that shows whether user should be put online or offline</param>
             /// <param name="userId">id of the user, who is going online or offline</param>
             /// <returns></returns>
-            public async Task UserWentOfflineOrOnline(bool online,int userId,string webSocketId)
+            public async Task UserWentOfflineOrOnline(bool online,int userId,string? webSocketId)
             {
                 var currentUser = _context.Users.Find(userId);
                 var userChats = _context.ChatUsers.Where(ch => ch.UserId == userId);
