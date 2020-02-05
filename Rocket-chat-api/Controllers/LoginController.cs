@@ -97,7 +97,14 @@ namespace Rocket_chat_api.Controllers
             _context.Users.Add(newUser);
 
             var secretLink = "https://localhost:5001/api/verify?key=" + secretKey;
-            MailSender.SendEmail(loginData.Email,secretLink);
+            try
+            {
+                MailSender.SendEmail(loginData.Email, secretLink);
+            }
+            catch (Exception)
+            {
+                return BadRequest(new {text = "Registration failed, try again later!"});
+            }
             await _context.SaveChangesAsync();
 
             return Ok(new {text = "User registered successfully"});
