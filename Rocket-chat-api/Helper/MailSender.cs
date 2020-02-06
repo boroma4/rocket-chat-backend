@@ -29,7 +29,7 @@ namespace Rocket_chat_api
                     Port = 587,
                     UseDefaultCredentials = false,
                     Credentials = new NetworkCredential("noreply.rocketchat@gmail.com",
-                        Environment.GetEnvironmentVariable("NOREPLYPASS", EnvironmentVariableTarget.User)),
+                        "RocketChat2020"),
                     EnableSsl = true
                 };
 

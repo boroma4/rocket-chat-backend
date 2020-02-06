@@ -31,7 +31,7 @@ namespace Rocket_chat_api
             services.AddControllers();
             services.AddSignalR();
             services.AddDbContext<AppDbContext>(
-                options => options.UseSqlite("Data Source = users.db"));  
+                options => options.UseMySql("server=localhost;database=MessengerDB;uid=root;pwd=root;"));  
             
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {

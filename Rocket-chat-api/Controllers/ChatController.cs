@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using DAL;
 using Domain;
@@ -154,6 +158,28 @@ namespace Rocket_chat_api.Controllers
                     .Take(10)
                     .OrderBy(message => message.CreatedDate)
                     .ToList();
+
+                /*string publicKeyXml = null;
+                
+
+                using (RSACryptoServiceProvider RSA = new RSACryptoServiceProvider(1024))
+                {
+                    for (var i = 0; i < messages.Count; i++)
+                    {
+
+                        UnicodeEncoding byteConverter = new UnicodeEncoding();
+                        byte[] dataToEncrypt = byteConverter.GetBytes(messages[i].MessageText);
+
+                        var encryptedData = RSAEncrypt(dataToEncrypt, RSA.ExportParameters(false), false);
+
+                        messages[i].MessageText = JsonSerializer.Serialize(encryptedData);
+                        var finalOutput = JsonSerializer.Serialize(messages[i]);
+                        Console.WriteLine(finalOutput);
+                    }
+                    publicKeyXml = RSA.ToXmlString(false);
+
+                }*/
+
                 return Ok(messages);
             
         }
@@ -172,5 +198,6 @@ namespace Rocket_chat_api.Controllers
             var chatUserList = _context.ChatUsers.Where(user => user.ChatId == chatId).ToList();
             return chatUserList;
         }
+        
     }
 }

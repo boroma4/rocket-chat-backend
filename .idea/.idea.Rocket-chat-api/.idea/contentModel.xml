@@ -22,6 +22,8 @@
           <e p="20200126201154_WithOnlineStatus.Designer.cs" t="Include" />
           <e p="20200131222141_ImageUrl.cs" t="Include" />
           <e p="20200131222141_ImageUrl.Designer.cs" t="Include" />
+          <e p="20200203204715_VerifyEmail.cs" t="Include" />
+          <e p="20200203204715_VerifyEmail.Designer.cs" t="Include" />
           <e p="AppDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -54,7 +56,7 @@
         <e p="AddChatDTO.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="DTO.csproj" t="IncludeRecursive" />
-        <e p="EncryptedMessage.cs" t="Include" />
+        <e p="EncryptedMessageDTO.cs" t="Include" />
         <e p="GoogleTokenDTO.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -72,12 +74,16 @@
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="ChatWorker.cs" t="Include" />
         <e p="Controllers" t="Include">
           <e p="ChatController.cs" t="Include" />
-          <e p="CryptoController.cs" t="Include" />
           <e p="LoginController.cs" t="Include" />
           <e p="StatusController.cs" t="Include" />
+        </e>
+        <e p="Helper" t="Include">
+          <e p="ChatWorker.cs" t="Include" />
+          <e p="DataEncryption.cs" t="Include" />
+          <e p="MailSender.cs" t="Include" />
+          <e p="Security.cs" t="Include" />
         </e>
         <e p="Hubs" t="Include">
           <e p="ChatHubs.cs" t="Include" />
@@ -89,7 +95,6 @@
             </e>
           </e>
         </e>
-        <e p="PasswordSecurity.cs" t="Include" />
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
