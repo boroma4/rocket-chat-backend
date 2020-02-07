@@ -148,16 +148,16 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<bool>("ConnectionChanged")
+                    b.Property<bool?>("ConnectionChanged")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("NewChatReceived")
+                    b.Property<bool?>("NewChatReceived")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("NewMessageReceived")
+                    b.Property<bool?>("NewMessageReceived")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Sound")
+                    b.Property<bool?>("Sound")
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("NotificationSettingsId");
