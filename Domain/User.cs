@@ -30,6 +30,10 @@ namespace DAL
         public bool EmailVerified { get; set; } = default!;
 
         [MaxLength(64)]
-        public string VerificationLink { get; set; } = default!;
+        public string? VerificationLink { get; set; } 
+        
+        
+        public NotificationSettings NotificationSettings { get; set; } = default!;
+
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace DTO
+﻿using DAL;
+
+namespace DTO
 {
     public class UserDTO
     {
@@ -10,5 +12,6 @@
         
         public string? ImageUrl { get; set; }
 
+        public NotificationSettings? NotificationSettings { get; set; }
     }
 }

@@ -20,6 +20,8 @@ namespace Domain
 
         public DbSet<MessageMedia> MessageMedias { get; set; } = default!;
 
+        public DbSet<NotificationSettings> NotificationSettings { get; set; } = default!;
+
 
         public AppDbContext(DbContextOptions options) : base(options)
         {

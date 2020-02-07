@@ -63,7 +63,8 @@ namespace Rocket_chat_api.Controllers
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
-                    ImageUrl = user.ImageUrl
+                    ImageUrl = user.ImageUrl,
+                    NotificationSettings = user.NotificationSettings
                 });
             }
             return BadRequest(new {text = "Wrong email or password"});
@@ -91,7 +92,9 @@ namespace Rocket_chat_api.Controllers
                 Login = loginData,
                 UserName = loginData.UserName,
                 EmailVerified = false,
-                VerificationLink = secretKey
+                VerificationLink = secretKey,
+                NotificationSettings = new NotificationSettings(),
+
             };
             
             _context.Users.Add(newUser);
@@ -114,7 +117,6 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/google")]
         public async Task<IActionResult> HandleGoogleLogin(GoogleTokenDTO tokenDto)
         {
-
             if (!ModelState.IsValid || string.IsNullOrEmpty(tokenDto.GoogleToken))
                 return BadRequest(new {text = "Invalid data."});
             
@@ -169,7 +171,8 @@ namespace Rocket_chat_api.Controllers
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
-                    ImageUrl = user.ImageUrl
+                    ImageUrl = user.ImageUrl,
+                    NotificationSettings = user.NotificationSettings
                 });
             }
             else
@@ -179,7 +182,8 @@ namespace Rocket_chat_api.Controllers
                 {
                     Login = loginData,
                     UserName = name,
-                    ImageUrl = claimDictionary["picture"]
+                    ImageUrl = claimDictionary["picture"],
+                    NotificationSettings = new NotificationSettings()
                 };
 
                 _context.Users.Add(user);
