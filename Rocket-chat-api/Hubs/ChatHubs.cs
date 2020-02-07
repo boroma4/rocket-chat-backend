@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
@@ -17,7 +16,6 @@ namespace Rocket_chat_api.Hubs
             {
                 _context = context;
             }
-            //TODO send message to specific client
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
                 var newMessage = new Message(userId,chatId,messageText);

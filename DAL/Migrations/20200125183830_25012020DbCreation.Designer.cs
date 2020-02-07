@@ -97,6 +97,7 @@ namespace Domain.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedDate")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("MessageText")

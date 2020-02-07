@@ -10,8 +10,7 @@ namespace Domain.Migrations
             migrationBuilder.AddColumn<DateTime>(
                 name: "CreatedDate",
                 table: "Messages",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                nullable: false);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

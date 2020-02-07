@@ -43,6 +43,7 @@
         <e p="MediaType.cs" t="Include" />
         <e p="Message.cs" t="Include" />
         <e p="MessageMedia.cs" t="Include" />
+        <e p="NotificationSettings.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
@@ -101,7 +102,6 @@
         </e>
         <e p="Rocket-chat-api.csproj" t="IncludeRecursive" />
         <e p="Startup.cs" t="Include" />
-        <e p="users.db" t="Include" />
       </e>
       <e p="Rocket-chat-api.sln" t="IncludeFlat" />
     </e>

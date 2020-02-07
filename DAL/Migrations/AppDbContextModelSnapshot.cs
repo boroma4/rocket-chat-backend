@@ -14,13 +14,14 @@ namespace Domain.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0");
+                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("DAL.Chat", b =>
                 {
                     b.Property<int>("ChatId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ChatId");
 
@@ -31,13 +32,13 @@ namespace Domain.Migrations
                 {
                     b.Property<int>("ChatUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ChatId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("ChatUserId");
 
@@ -52,19 +53,19 @@ namespace Domain.Migrations
                 {
                     b.Property<int>("LoginId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("TEXT");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.HasKey("LoginId");
@@ -76,11 +77,11 @@ namespace Domain.Migrations
                 {
                     b.Property<int>("MediaTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<string>("MediaTypeName")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(32) CHARACTER SET utf8mb4")
                         .HasMaxLength(32);
 
                     b.HasKey("MediaTypeId");
@@ -92,21 +93,21 @@ namespace Domain.Migrations
                 {
                     b.Property<int>("MessageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("ChatId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("TEXT");
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("MessageText")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
                     b.Property<int>("UserId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("MessageId");
 
@@ -119,64 +120,91 @@ namespace Domain.Migrations
                 {
                     b.Property<int>("MessageMediaId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("File")
                         .IsRequired()
-                        .HasColumnType("BLOB");
+                        .HasColumnType("longblob");
 
                     b.Property<string>("FileName")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.Property<int>("MediaTypeId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<int>("MessageId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.HasKey("MessageMediaId");
 
                     b.ToTable("MessageMedias");
                 });
 
+            modelBuilder.Entity("DAL.NotificationSettings", b =>
+                {
+                    b.Property<int>("NotificationSettingsId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool>("ConnectionChanged")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("NewChatReceived")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("NewMessageReceived")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("Sound")
+                        .HasColumnType("tinyint(1)");
+
+                    b.HasKey("NotificationSettingsId");
+
+                    b.ToTable("NotificationSettings");
+                });
+
             modelBuilder.Entity("DAL.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
 
                     b.Property<bool>("EmailVerified")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(128) CHARACTER SET utf8mb4")
                         .HasMaxLength(128);
 
                     b.Property<bool>("IsOnline")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<int>("LoginId")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("int");
+
+                    b.Property<int>("NotificationSettingsId")
+                        .HasColumnType("int");
 
                     b.Property<string>("UserName")
                         .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.Property<string>("VerificationLink")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.Property<string>("WebSocketId")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("varchar(64) CHARACTER SET utf8mb4")
                         .HasMaxLength(64);
 
                     b.HasKey("UserId");
 
                     b.HasIndex("LoginId");
+
+                    b.HasIndex("NotificationSettingsId");
 
                     b.ToTable("Users");
                 });
@@ -210,6 +238,12 @@ namespace Domain.Migrations
                     b.HasOne("DAL.Login", "Login")
                         .WithMany()
                         .HasForeignKey("LoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAL.NotificationSettings", "NotificationSettings")
+                        .WithMany()
+                        .HasForeignKey("NotificationSettingsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

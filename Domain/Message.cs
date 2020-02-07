@@ -24,7 +24,7 @@ namespace DAL
         [MaxLength(256)]
         public string MessageText { get; set; } = default!;
 
-        public DateTime CreatedDate { get; set; } = default!;
+        public DateTime? CreatedDate { get; set; }
 
     }
 }
