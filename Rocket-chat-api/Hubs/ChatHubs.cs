@@ -21,12 +21,12 @@ namespace Rocket_chat_api.Hubs
                 var newMessage = new Message(userId,chatId,messageText);
 
                 _context.Messages.Add(newMessage);
+                await _context.SaveChangesAsync();
 
                 var chatUserToFind = await _context.ChatUsers.FirstOrDefaultAsync(c => c.ChatId == chatId && c.UserId != userId);
                 var friend = await _context.Users.FindAsync(chatUserToFind.UserId);
                     
                 await Clients.Client(friend.WebSocketId).SendAsync("sendDirectMessage", userId, chatId, messageText);
-                await _context.SaveChangesAsync();
                     
             }
 
