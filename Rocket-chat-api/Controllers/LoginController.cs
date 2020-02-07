@@ -9,11 +9,10 @@ using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Permissions;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -59,13 +58,15 @@ namespace Rocket_chat_api.Controllers
                 {
                     return BadRequest(new {text = "Please verify your email!"});
                 }
+
+                var notificationSetting = _context.NotificationSettings.Find(user.NotificationSettingsId);
                 return Ok(new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
-                    NotificationSettings = user.NotificationSettings
+                    NotificationSettings = notificationSetting
                 });
             }
             return BadRequest(new {text = "Wrong email or password"});
@@ -94,7 +95,7 @@ namespace Rocket_chat_api.Controllers
                 UserName = loginData.UserName,
                 EmailVerified = false,
                 VerificationLink = secretKey,
-                NotificationSettings = new NotificationSettings(),
+                NotificationSettingsId = new NotificationSettings().NotificationSettingsId,
 
             };
             
@@ -161,45 +162,44 @@ namespace Rocket_chat_api.Controllers
             if (_context.Users.Any(u => u.Login.Email.Equals(email)))
             {
                 var user = _context.Users.Single(u => u.Login.Email.Equals(email));
-                var response = JsonSerializer.Serialize(user);
-                
-                Console.WriteLine(response);
                 //we dont put our users as verified in the DB
                 //This can still get broken if normal email is registered, but not verified yet
                 if (user.EmailVerified)
                 {
                     return BadRequest(new {text = "Email already taken."});
                 }
+                var notificationSetting = _context.NotificationSettings.Find(user.NotificationSettingsId);
                 return Ok(new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
-                    NotificationSettings = user.NotificationSettings
+                    NotificationSettings = notificationSetting
                 });
             }
             else
             {
                 var loginData = new Login() {Email = email,Password = "xxxIsGoogleGringoXxx"};
+                var notificationSetting = new NotificationSettings();
                 var user = new User()
                 {
                     Login = loginData,
                     UserName = name,
                     ImageUrl = claimDictionary["picture"],
-                    NotificationSettings = new NotificationSettings()
+                    NotificationSettingsId = notificationSetting.NotificationSettingsId
                 };
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-                
+
                 return Ok(new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
-                    NotificationSettings = user.NotificationSettings
+                    NotificationSettings = notificationSetting
                 });
 
             }
