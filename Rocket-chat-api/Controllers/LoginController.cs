@@ -88,17 +88,18 @@ namespace Rocket_chat_api.Controllers
             loginData.Password = Security.Encrypt(loginData.Password,1000);
             var secretKey = Security.ComputeSha256Hash(loginData.Email);
 
-            
+            var notificationSetting = new NotificationSettings();
+            _context.NotificationSettings.Add(notificationSetting);
+            await _context.SaveChangesAsync();
             var newUser = new User()
             {
                 Login = loginData,
                 UserName = loginData.UserName,
                 EmailVerified = false,
                 VerificationLink = secretKey,
-                NotificationSettingsId = new NotificationSettings().NotificationSettingsId,
+                NotificationSettingsId = notificationSetting.NotificationSettingsId,
 
             };
-            
             _context.Users.Add(newUser);
 
             var secretLink = "https://localhost:5001/api/verify?key=" + secretKey;
@@ -137,14 +138,9 @@ namespace Rocket_chat_api.Controllers
 
             //Extract the payload of the JWT
             var claims = token.Claims;
-            var claimDictionary = new Dictionary<string, string>();
+            var claimDictionary = claims.ToDictionary(c => c.Type, c => c.Value);
 
             //turn IEnumerable to collection
-            foreach (var c in claims)
-            {
-                claimDictionary.Add(c.Type, c.Value);
-                Console.WriteLine(c.Type);
-            }
 
             if (claimDictionary["iss"] != "accounts.google.com")
             {
@@ -182,6 +178,9 @@ namespace Rocket_chat_api.Controllers
             {
                 var loginData = new Login() {Email = email,Password = "xxxIsGoogleGringoXxx"};
                 var notificationSetting = new NotificationSettings();
+                _context.NotificationSettings.Add(notificationSetting);
+                await _context.SaveChangesAsync();
+
                 var user = new User()
                 {
                     Login = loginData,
