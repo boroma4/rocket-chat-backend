@@ -95,5 +95,26 @@ namespace Rocket_chat_api.Controllers
             }
             return Redirect("http://localhost:3000/rocket-chat-front/#/vfailed");
         }
+
+
+        [HttpGet]
+        [Route("api/settingsapply")]
+        public IActionResult SaveNotificationSettings(int userId, bool sound, bool newChat, bool newMessage, bool connection)
+        {
+            var notificationId = _context.Users.Single(user => user.UserId == userId).NotificationSettingsId;
+            var notificationEntity = _context.NotificationSettings.SingleOrDefault(settings => settings.NotificationSettingsId == notificationId);
+
+            if (notificationEntity!=null)
+            {
+                notificationEntity.Sound = sound;
+                notificationEntity.ConnectionChanged = connection;
+                notificationEntity.NewChatReceived = newChat;
+                notificationEntity.NewMessageReceived = newMessage;
+                _context.NotificationSettings.Update(notificationEntity);
+                _context.SaveChanges();
+            }
+            
+            return Ok("success");
+        }
     }
 }

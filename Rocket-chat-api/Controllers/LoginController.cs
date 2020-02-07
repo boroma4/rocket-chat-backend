@@ -9,10 +9,11 @@ using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Permissions;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -160,6 +161,9 @@ namespace Rocket_chat_api.Controllers
             if (_context.Users.Any(u => u.Login.Email.Equals(email)))
             {
                 var user = _context.Users.Single(u => u.Login.Email.Equals(email));
+                var response = JsonSerializer.Serialize(user);
+                
+                Console.WriteLine(response);
                 //we dont put our users as verified in the DB
                 //This can still get broken if normal email is registered, but not verified yet
                 if (user.EmailVerified)
@@ -194,7 +198,8 @@ namespace Rocket_chat_api.Controllers
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
-                    ImageUrl = user.ImageUrl
+                    ImageUrl = user.ImageUrl,
+                    NotificationSettings = user.NotificationSettings
                 });
 
             }
