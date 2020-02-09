@@ -1,5 +1,11 @@
 ﻿
+using System;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using DAL;
@@ -18,12 +24,21 @@ namespace Rocket_chat_api.Hubs
             }
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
+
+                Console.WriteLine($"\n\n\n{messageText}\n\n\n");
+                var sendToUser = messageText;
+                messageText = DataEncryption.DecryptionFromString(messageText);
                 var newMessage = new Message(userId,chatId,messageText);
 
                 _context.Messages.Add(newMessage);
+
+                var chatUserToFind = await _context.ChatUsers.FirstOrDefaultAsync(c => c.ChatId == chatId && c.UserId != userId);
+                var friend = await _context.Users.FindAsync(chatUserToFind.UserId);
+
+                DataEncryption.EncryptionToString(messageText);
+                Console.WriteLine($"\n\n\n{sendToUser}\n\n\n");
+                await Clients.Client(friend.WebSocketId).SendAsync("sendDirectMessage", userId, chatId, sendToUser);
                 await _context.SaveChangesAsync();
-                await Clients.All.SendAsync("sendDirectMessage", userId, chatId, messageText);
-                    
             }
 
             /// <summary>
@@ -39,13 +54,16 @@ namespace Rocket_chat_api.Hubs
             /// current user id was there for some reason 
             public async Task ChatWithUserWasCreated(int currentUserId,int chatId, object newChat)
             {
-                var userToAddId = -1;
-                var chatuserToAdd = _context.ChatUsers.SingleOrDefault(ch => ch.UserId != currentUserId && ch.ChatId == chatId);
-                if (chatuserToAdd != null)
+                var chatUserToAdd = _context.ChatUsers.SingleOrDefault(ch => ch.UserId != currentUserId && ch.ChatId == chatId);
+                if (chatUserToAdd != null)
                 {
-                    userToAddId = chatuserToAdd.UserId;
+                    var userToAddId = chatUserToAdd.UserId;
+                    var userToAddSocket = _context.Users.Find(userToAddId).WebSocketId;
+                    if (userToAddSocket != null)
+                    {
+                        await Clients.Client(userToAddSocket).SendAsync("getChat",newChat);
+                    }
                 }
-                await Clients.All.SendAsync("getChat",userToAddId,newChat);
             }
 
             /// <summary>
@@ -55,13 +73,15 @@ namespace Rocket_chat_api.Hubs
             /// <param name="online">bool that shows whether user should be put online or offline</param>
             /// <param name="userId">id of the user, who is going online or offline</param>
             /// <returns></returns>
-            public async Task UserWentOfflineOrOnline(bool online,int userId)
+            public async Task UserWentOfflineOrOnline(bool online,int userId,string? webSocketId)
             {
                 var currentUser = _context.Users.Find(userId);
                 var userChats = _context.ChatUsers.Where(ch => ch.UserId == userId);
                 var chatIdList = userChats.Select(userChat => userChat.ChatId).ToList();
                 
                 currentUser.IsOnline = online;
+   
+                currentUser.WebSocketId = online ? webSocketId : null;
                 
                 await Clients.All.SendAsync("UserWentOfflineOrOnline",online,userId,chatIdList);
                 _context.Users.Update(currentUser);
@@ -101,5 +121,6 @@ namespace Rocket_chat_api.Hubs
                 await Clients.All.SendAsync("UserDataChanged",userId,userChatIds,type,value);
                 await _context.SaveChangesAsync();
             }
+
         }
 }
