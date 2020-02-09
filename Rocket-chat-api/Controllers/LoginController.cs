@@ -105,7 +105,7 @@ namespace Rocket_chat_api.Controllers
             };
             _context.Users.Add(newUser);
 
-            var secretLink = "https://localhost:5001/api/verify?key=" + secretKey;
+            var secretLink = "https://rocket-chat-api.azurewebsites.net/api/verify?key=" + secretKey;
             try
             {
                 MailSender.SendEmail(loginData.Email, secretLink);
