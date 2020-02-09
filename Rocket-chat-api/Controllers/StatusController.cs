@@ -6,6 +6,7 @@ using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Rocket_chat_api.Helper;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -27,11 +28,23 @@ namespace Rocket_chat_api.Controllers
         /// <summary>
         /// Method that sets a user as offline in the database.
         /// </summary>
-        /// <param name="userId">Id of the user that went offline</param>
-        [HttpGet]
+        /// <param name="tokenDto">Object that contains signed token with Id of the user that went offline</param>
+        [HttpPost]
         [Route("/api/disconnect")]
-        public IActionResult UserDisconnected(int userId)
+        public IActionResult UserDisconnected(TokenDto tokenDto)
         {
+            var token = tokenDto.Token;
+            Dictionary<string, string> validatedTokenClaims;
+            try
+            {
+                validatedTokenClaims = TokenValidation.ValidateToken(token);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new {text = "Validation failed"});
+            }
+
+            var userId = int.Parse(validatedTokenClaims["userId"]);
             var user = _context.Users.Find(userId);
             if (user == null)
             {
@@ -97,10 +110,27 @@ namespace Rocket_chat_api.Controllers
         }
 
 
-        [HttpGet]
+        [HttpPost]
         [Route("api/settingsapply")]
-        public IActionResult SaveNotificationSettings(int userId, bool sound, bool newChat, bool newMessage, bool connection)
+        public IActionResult SaveNotificationSettings(TokenDto tokenDto)
         {
+            var token = tokenDto.Token;
+            Dictionary<string, string> validatedTokenClaims;
+            try
+            {
+                validatedTokenClaims = TokenValidation.ValidateToken(token);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new {text = "Validation failed"});
+            }
+
+            var userId = int.Parse(validatedTokenClaims["userId"]);
+            var sound = bool.Parse(validatedTokenClaims["sound"]);
+            var connection = bool.Parse(validatedTokenClaims["connection"]);
+            var newChat = bool.Parse(validatedTokenClaims["newchat"]);
+            var newMessage = bool.Parse(validatedTokenClaims["newmessage"]);
+
             var notificationId = _context.Users.Single(user => user.UserId == userId).NotificationSettingsId;
             var notificationEntity = _context.NotificationSettings.SingleOrDefault(settings => settings.NotificationSettingsId == notificationId);
 

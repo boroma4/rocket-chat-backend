@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Permissions;
+using Rocket_chat_api.Helper;
 
 namespace Rocket_chat_api.Controllers
 {
@@ -37,7 +38,7 @@ namespace Rocket_chat_api.Controllers
 
         [HttpPost]
         [Route("/api/login")]
-        public IActionResult Login(Login loginData)
+        public async Task<IActionResult> Login(Login loginData)
         {
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password))
              return BadRequest(new {text ="Invalid data"});
@@ -60,14 +61,16 @@ namespace Rocket_chat_api.Controllers
                 }
 
                 var notificationSetting = _context.NotificationSettings.Find(user.NotificationSettingsId);
-                return Ok(new UserDTO
+                var userData = new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
-                });
+                };
+                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                return Ok(new {userToken});
             }
             return BadRequest(new {text = "Wrong email or password"});
         }
@@ -118,12 +121,12 @@ namespace Rocket_chat_api.Controllers
 
         [HttpPost]
         [Route("/api/google")]
-        public async Task<IActionResult> HandleGoogleLogin(GoogleTokenDTO tokenDto)
+        public async Task<IActionResult> HandleGoogleLogin(TokenDto tokenDto)
         {
-            if (!ModelState.IsValid || string.IsNullOrEmpty(tokenDto.GoogleToken))
+            if (!ModelState.IsValid || string.IsNullOrEmpty(tokenDto.Token))
                 return BadRequest(new {text = "Invalid data."});
             
-            var googleToken = tokenDto.GoogleToken;
+            var googleToken = tokenDto.Token;
             
             var jwtHandler = new JwtSecurityTokenHandler();
 
@@ -165,14 +168,16 @@ namespace Rocket_chat_api.Controllers
                     return BadRequest(new {text = "Email already taken."});
                 }
                 var notificationSetting = _context.NotificationSettings.Find(user.NotificationSettingsId);
-                return Ok(new UserDTO
+                var userData = new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
-                });
+                };
+                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                return Ok(new {userToken});
             }
             else
             {
@@ -191,16 +196,17 @@ namespace Rocket_chat_api.Controllers
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
-
-                return Ok(new UserDTO
+                
+                var userData = new UserDTO
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
                     IsOnline = user.IsOnline,
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
-                });
-
+                };
+                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                return Ok(new {userToken});
             }
 
         }
