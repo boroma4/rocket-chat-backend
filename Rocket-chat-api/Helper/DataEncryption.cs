@@ -12,6 +12,9 @@ namespace Rocket_chat_api
         {
             using(AesManaged aes = new AesManaged()) {  
 
+                Console.WriteLine(Convert.ToBase64String(aes.Key));
+                Console.WriteLine(Convert.ToBase64String(aes.IV));
+                
                 var byteConverter = new UnicodeEncoding();
                 var message = Encoding.UTF8.GetBytes(messageText);
                 messageText = Encoding.UTF8.GetString(message);
