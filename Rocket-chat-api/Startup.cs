@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Logging;
 using Rocket_chat_api.Hubs;
 
 namespace Rocket_chat_api
@@ -31,7 +32,7 @@ namespace Rocket_chat_api
             services.AddControllers();
             services.AddSignalR();
             services.AddDbContext<AppDbContext>(
-                options => options.UseMySql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING", EnvironmentVariableTarget.User)));  
+                options => options.UseMySql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")));  
             
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
@@ -39,7 +40,7 @@ namespace Rocket_chat_api
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
-                    .WithOrigins("https://localhost:3000","http://localhost:3000","https://boroma4.github.io");
+                    .WithOrigins("https://boroma4.github.io");
             }));
             
         }

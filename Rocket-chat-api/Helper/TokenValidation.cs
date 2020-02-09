@@ -15,7 +15,7 @@ namespace Rocket_chat_api.Helper
     public static class TokenValidation
     {
         private static JwtSecurityTokenHandler jwtHandler { get; set; }
-        private static readonly string Signature = "this is my custom Secret key for authnetication";
+        private static readonly string Signature = Environment.GetEnvironmentVariable("TOKEN_SIGNATURE");
 
         static TokenValidation()
         {

@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\consoles\db" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\extensions" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\config\scratches" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Rocket-chat-api.1570232835.00" t="ExcludeRecursive" />
-    <e p="C:\Users\Artem Grukhal\Desktop\Rocket_Chat\rocket-chat-backend" t="IncludeFlat">
+    <e p="C:\Users\bohda\.Rider2019.2\config\consoles\db" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\config\extensions" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\bohda\.Rider2019.2\system\resharper-host\local\Transient\ReSharperHost\v192\SolutionCaches\_Rocket-chat-api.-383839702.00" t="ExcludeRecursive" />
+    <e p="D:\repos\TestReact\Rocket-chat-api" t="IncludeFlat">
       <e p="DAL" t="IncludeRecursive">
         <e p="AppDbContext.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="DAL.csproj" t="IncludeRecursive" />
         <e p="Migrations" t="Include">
+          <e p="20200207103738_NotificationSettings.cs" t="Include" />
+          <e p="20200207103738_NotificationSettings.Designer.cs" t="Include" />
           <e p="20200207135557_Notifications.cs" t="Include" />
           <e p="20200207135557_Notifications.Designer.cs" t="Include" />
           <e p="AppDbContextModelSnapshot.cs" t="Include" />
@@ -47,8 +48,6 @@
         <e p="AddChatDTO.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
         <e p="DTO.csproj" t="IncludeRecursive" />
-        <e p="EncryptedMessageDTO.cs" t="Include" />
-        <e p="GoogleTokenDTO.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netstandard2.1" t="Include">
@@ -56,6 +55,7 @@
             </e>
           </e>
         </e>
+        <e p="TokenDTO.cs" t="Include" />
         <e p="UserChatDTO.cs" t="Include" />
         <e p="UserDTO.cs" t="Include" />
         <e p="UserStatusDTO.cs" t="Include" />
@@ -75,6 +75,7 @@
           <e p="DataEncryption.cs" t="Include" />
           <e p="MailSender.cs" t="Include" />
           <e p="Security.cs" t="Include" />
+          <e p="TokenValidation.cs" t="Include" />
         </e>
         <e p="Hubs" t="Include">
           <e p="ChatHubs.cs" t="Include" />

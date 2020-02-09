@@ -10,11 +10,8 @@ namespace Rocket_chat_api
     {
         public static string EncryptionToString(string messageText)
         {
-            using(AesManaged aes = new AesManaged()) {  
+            using(AesManaged aes = new AesManaged()) {
 
-                Console.WriteLine(Convert.ToBase64String(aes.Key));
-                Console.WriteLine(Convert.ToBase64String(aes.IV));
-                
                 var byteConverter = new UnicodeEncoding();
                 var message = Encoding.UTF8.GetBytes(messageText);
                 messageText = Encoding.UTF8.GetString(message);
@@ -51,14 +48,17 @@ namespace Rocket_chat_api
         {
             using(AesManaged aes = new AesManaged()) {  
 
+               // Console.WriteLine(Convert.ToBase64String(aes.Key));
+                // Console.WriteLine(Convert.ToBase64String(aes.IV));
+                
                 var byteConverter = new UnicodeEncoding();
                 var message = byteConverter.GetBytes(messageText);
                     
                 //For production use Key and IV have to be stored in Environmental variables
                 //THESE KEY AND IV ARE FOR TESTING USAGE ONLY
                 var decryptor = aes.CreateDecryptor(
-                    Convert.FromBase64String("3ICSVK1JfR+GBzw/iilv+/gttcRwxUYZI0XxJkqWdJA="),
-                    Convert.FromBase64String("4hayN7sv3Jma/85LhnKSJQ=="));  
+                    Convert.FromBase64String(Environment.GetEnvironmentVariable("AESKEY")),
+                    Convert.FromBase64String(Environment.GetEnvironmentVariable("AESIV")));  
 
                 using(MemoryStream ms = new MemoryStream(Convert.FromBase64String(messageText))) {  
 
