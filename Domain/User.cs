@@ -34,6 +34,6 @@ namespace DAL
         
         
         public int NotificationSettingsId { get; set; } = default!;
-
+        
     }
 }
