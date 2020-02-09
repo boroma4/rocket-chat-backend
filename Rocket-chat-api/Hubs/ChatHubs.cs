@@ -1,5 +1,11 @@
 ﻿
+using System;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using System.Text.Unicode;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using DAL;
@@ -18,16 +24,21 @@ namespace Rocket_chat_api.Hubs
             }
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
+
+                Console.WriteLine($"\n\n\n{messageText}\n\n\n");
+                var sendToUser = messageText;
+                messageText = DataEncryption.DecryptionFromString(messageText);
                 var newMessage = new Message(userId,chatId,messageText);
 
                 _context.Messages.Add(newMessage);
 
                 var chatUserToFind = await _context.ChatUsers.FirstOrDefaultAsync(c => c.ChatId == chatId && c.UserId != userId);
                 var friend = await _context.Users.FindAsync(chatUserToFind.UserId);
-                    
-                await Clients.Client(friend.WebSocketId).SendAsync("sendDirectMessage", userId, chatId, messageText);
+
+                DataEncryption.EncryptionToString(messageText);
+                Console.WriteLine($"\n\n\n{sendToUser}\n\n\n");
+                await Clients.Client(friend.WebSocketId).SendAsync("sendDirectMessage", userId, chatId, sendToUser);
                 await _context.SaveChangesAsync();
-                    
             }
 
             /// <summary>
@@ -110,5 +121,6 @@ namespace Rocket_chat_api.Hubs
                 await Clients.All.SendAsync("UserDataChanged",userId,userChatIds,type,value);
                 await _context.SaveChangesAsync();
             }
+
         }
 }
