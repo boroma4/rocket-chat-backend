@@ -64,7 +64,7 @@ namespace Rocket_chat_api.Helper
             var claimsIdentity = new ClaimsIdentity();
             claimsIdentity.AddClaim(new Claim("userName",userDto.UserName ));
             claimsIdentity.AddClaim(new Claim("userId", userDto.UserId.ToString()));
-            claimsIdentity.AddClaim(new Claim("imageUrl",userDto.ImageUrl ));
+            claimsIdentity.AddClaim(new Claim("imageUrl",userDto.ImageUrl ?? "" ));
             claimsIdentity.AddClaim(new Claim("isOnline",userDto.IsOnline.ToString() ));
             claimsIdentity.AddClaim(new Claim("notificationSettings", JsonConvert.SerializeObject(new
             {
