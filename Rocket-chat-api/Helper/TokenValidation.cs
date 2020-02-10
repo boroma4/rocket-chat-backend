@@ -48,7 +48,6 @@ namespace Rocket_chat_api.Helper
             // Create JWToken
             var token = jwtHandler.CreateJwtSecurityToken(
                 subject: claims,
-                notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials:
                 new SigningCredentials(
