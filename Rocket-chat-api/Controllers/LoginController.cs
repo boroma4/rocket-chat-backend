@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Permissions;
+using Microsoft.Extensions.Configuration;
 using Rocket_chat_api.Helper;
 
 namespace Rocket_chat_api.Controllers
@@ -29,9 +30,12 @@ namespace Rocket_chat_api.Controllers
         
         private readonly AppDbContext _context;
 
+        private readonly IConfiguration _configuration;
 
-        public LoginController(ILogger<LoginController> logger,AppDbContext context)
+
+        public LoginController(ILogger<LoginController> logger,AppDbContext context,IConfiguration configuration)
         {
+            _configuration = configuration;
             _logger = logger;
             _context = context;
         }
@@ -69,7 +73,7 @@ namespace Rocket_chat_api.Controllers
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
                 };
-                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                var userToken = await TokenValidation.CreateJwtAsync(userData,_configuration["TOKEN_SIGNATURE"]);
                 return Ok(new {userToken});
             }
             return BadRequest(new {text = "Wrong email or password"});
@@ -108,7 +112,7 @@ namespace Rocket_chat_api.Controllers
             var secretLink = "https://rocket-chat-api.azurewebsites.net/api/verify?key=" + secretKey;
             try
             {
-                MailSender.SendEmail(loginData.Email, secretLink);
+                MailSender.SendEmail(loginData.Email, secretLink,_configuration["NOREPLYPASS"]);
             }
             catch (Exception)
             {
@@ -176,7 +180,7 @@ namespace Rocket_chat_api.Controllers
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
                 };
-                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                var userToken = await TokenValidation.CreateJwtAsync(userData,_configuration["TOKEN_SIGNATURE"]);
                 return Ok(new {userToken});
             }
             else
@@ -205,7 +209,7 @@ namespace Rocket_chat_api.Controllers
                     ImageUrl = user.ImageUrl,
                     NotificationSettings = notificationSetting
                 };
-                var userToken = await TokenValidation.CreateJwtAsync(userData);
+                var userToken = await TokenValidation.CreateJwtAsync(userData,_configuration["TOKEN_SIGNATURE"]);
                 return Ok(new {userToken});
             }
 

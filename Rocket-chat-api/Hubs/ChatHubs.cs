@@ -11,21 +11,25 @@ using Microsoft.AspNetCore.SignalR;
 using DAL;
 using Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Rocket_chat_api.Hubs
 {
     public class ChatHub : Hub
         {
             private readonly AppDbContext _context;
+
+            private readonly IConfiguration _configuration;
             
-            public ChatHub(AppDbContext context)
+            public ChatHub(AppDbContext context,IConfiguration configuration)
             {
+                _configuration = configuration;
                 _context = context;
             }
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
                 var sendToUser = messageText;
-                messageText = DataEncryption.DecryptionFromString(messageText);
+                messageText = DataEncryption.DecryptionFromString(messageText,_configuration["AESKEY"],_configuration["AESIV"]);
 
                 var newMessage = new Message(userId,chatId,messageText);
 

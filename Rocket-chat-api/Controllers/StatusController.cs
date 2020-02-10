@@ -5,6 +5,7 @@ using DAL;
 using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Rocket_chat_api.Helper;
 
@@ -18,9 +19,12 @@ namespace Rocket_chat_api.Controllers
         
         private readonly AppDbContext _context;
 
+        private readonly IConfiguration _configuration;
 
-        public StatusController(ILogger<LoginController> logger,AppDbContext context)
+
+        public StatusController(ILogger<LoginController> logger,AppDbContext context, IConfiguration configuration)
         {
+            _configuration = configuration;
             _logger = logger;
             _context = context;
         }
@@ -37,7 +41,7 @@ namespace Rocket_chat_api.Controllers
             Dictionary<string, string> validatedTokenClaims;
             try
             {
-                validatedTokenClaims = TokenValidation.ValidateToken(token);
+                validatedTokenClaims = TokenValidation.ValidateToken(token,_configuration["TOKEN_SIGNATURE"]);
             }
             catch (ArgumentException)
             {
@@ -118,7 +122,7 @@ namespace Rocket_chat_api.Controllers
             Dictionary<string, string> validatedTokenClaims;
             try
             {
-                validatedTokenClaims = TokenValidation.ValidateToken(token);
+                validatedTokenClaims = TokenValidation.ValidateToken(token,_configuration["TOKEN_SIGNATURE"]);
             }
             catch (ArgumentException)
             {

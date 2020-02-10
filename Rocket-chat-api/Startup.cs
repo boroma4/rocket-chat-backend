@@ -32,7 +32,7 @@ namespace Rocket_chat_api
             services.AddControllers();
             services.AddSignalR();
             services.AddDbContext<AppDbContext>(
-                options => options.UseMySql(Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")));  
+                options => options.UseMySql(Configuration["DATABASE_CONNECTION_STRING"]));  
             
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {

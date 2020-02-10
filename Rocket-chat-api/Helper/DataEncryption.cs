@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace Rocket_chat_api
 {
-    public class DataEncryption
+    public static class DataEncryption
     {
         public static string EncryptionToString(string messageText)
         {
@@ -44,7 +44,7 @@ namespace Rocket_chat_api
         /// </summary>
         /// <param name="messageText">text of message that is being sent</param>
         /// <returns></returns>
-        public static string DecryptionFromString(string messageText)
+        public static string DecryptionFromString(string messageText,string key,string iv)
         {
             using(AesManaged aes = new AesManaged()) {  
 
@@ -57,8 +57,8 @@ namespace Rocket_chat_api
                 //For production use Key and IV have to be stored in Environmental variables
                 //THESE KEY AND IV ARE FOR TESTING USAGE ONLY
                 var decryptor = aes.CreateDecryptor(
-                    Convert.FromBase64String(Environment.GetEnvironmentVariable("AESKEY")),
-                    Convert.FromBase64String(Environment.GetEnvironmentVariable("AESIV")));  
+                    Convert.FromBase64String(key),
+                    Convert.FromBase64String(iv));  
 
                 using(MemoryStream ms = new MemoryStream(Convert.FromBase64String(messageText))) {  
 

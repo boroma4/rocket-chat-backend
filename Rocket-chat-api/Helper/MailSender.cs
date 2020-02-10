@@ -6,9 +6,9 @@ using SmtpClient = System.Net.Mail.SmtpClient;
 
 namespace Rocket_chat_api
 {
-    public class MailSender
+    public static class MailSender
     {
-        public static void SendEmail(string recipient, string link)
+        public static void SendEmail(string recipient, string link,string password)
         {
             try
             {
@@ -28,8 +28,7 @@ namespace Rocket_chat_api
                 {
                     Port = 587,
                     UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential("noreply.rocketchat@gmail.com",
-                        Environment.GetEnvironmentVariable("NOREPLYPASS", EnvironmentVariableTarget.User)),
+                    Credentials = new NetworkCredential("noreply.rocketchat@gmail.com",password),
                     EnableSsl = true
                 };
 

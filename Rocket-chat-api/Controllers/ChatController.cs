@@ -12,6 +12,7 @@ using Domain;
 using DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Rocket_chat_api.Helper;
 using Rocket_chat_api.Hubs;
@@ -27,10 +28,12 @@ namespace Rocket_chat_api.Controllers
         private readonly AppDbContext _context;
         
         private ChatWorker _chatWorker;
+
+        private readonly IConfiguration _configuration;
         
-        
-        public ChatController(ILogger<LoginController> logger,AppDbContext context)
+        public ChatController(ILogger<LoginController> logger,AppDbContext context,IConfiguration configuration)
         {
+            _configuration = configuration;
             _logger = logger;
             _context = context;
             _chatWorker = new ChatWorker(_context);
@@ -50,7 +53,7 @@ namespace Rocket_chat_api.Controllers
             Dictionary<string, string> validatedTokenClaims;
             try
             {
-                validatedTokenClaims = TokenValidation.ValidateToken(token);
+                validatedTokenClaims = TokenValidation.ValidateToken(token,_configuration["TOKEN_SIGNATURE"]);
             }
             catch (ArgumentException)
             {
@@ -115,7 +118,7 @@ namespace Rocket_chat_api.Controllers
             Dictionary<string, string> validatedTokenClaims;
             try
             {
-                validatedTokenClaims = TokenValidation.ValidateToken(token);
+                validatedTokenClaims = TokenValidation.ValidateToken(token,_configuration["TOKEN_SIGNATURE"]);
             }
             catch (ArgumentException)
             {
@@ -179,7 +182,7 @@ namespace Rocket_chat_api.Controllers
             Dictionary<string, string> validatedTokenClaims;
             try
             {
-                validatedTokenClaims = TokenValidation.ValidateToken(token);
+                validatedTokenClaims = TokenValidation.ValidateToken(token,_configuration["TOKEN_SIGNATURE"]);
             }
             catch (ArgumentException)
             {

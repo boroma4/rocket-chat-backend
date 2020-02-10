@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DAL;
 using DTO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
@@ -15,14 +16,12 @@ namespace Rocket_chat_api.Helper
     public static class TokenValidation
     {
         private static JwtSecurityTokenHandler jwtHandler { get; set; }
-        private static readonly string Signature = Environment.GetEnvironmentVariable("TOKEN_SIGNATURE");
-
         static TokenValidation()
         {
             jwtHandler = new JwtSecurityTokenHandler();
         }
 
-        internal static Dictionary<string,string> ValidateToken(string token)
+        internal static Dictionary<string,string> ValidateToken(string token,string signature)
         {
             var readableToken = jwtHandler.CanReadToken(token);
 
@@ -32,7 +31,7 @@ namespace Rocket_chat_api.Helper
             }
             try
             {
-                var claimsPrincipal = jwtHandler.ValidateToken(token, TokenValidation.GetValidationParameters(), out var validatedToken);
+                var claimsPrincipal = jwtHandler.ValidateToken(token,GetValidationParameters(signature), out var validatedToken);
                 return claimsPrincipal.Claims.ToDictionary(c => c.Type, c => c.Value);
             }
             catch (Exception e)
@@ -41,18 +40,19 @@ namespace Rocket_chat_api.Helper
             }
         }
         
-        internal static async Task<string> CreateJwtAsync(UserDTO userDto )
+        internal static async Task<string> CreateJwtAsync(UserDTO userDto,string signature )
         {
             var claims = await CreateClaimsIdentitiesAsync(userDto);
 
             // Create JWToken
             var token = jwtHandler.CreateJwtSecurityToken(
                 subject: claims,
+                notBefore: new DateTime(1970, 1, 1),
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials:
                 new SigningCredentials(
                     new SymmetricSecurityKey(
-                        Encoding.Default.GetBytes(Signature)),
+                        Encoding.Default.GetBytes(signature)),
                     SecurityAlgorithms.HmacSha256Signature));
 
             return jwtHandler.WriteToken(token);
@@ -76,7 +76,7 @@ namespace Rocket_chat_api.Helper
 
             return Task.FromResult(claimsIdentity);
         }
-        private static TokenValidationParameters GetValidationParameters()
+        private static TokenValidationParameters GetValidationParameters(string signature)
         {
             // Validate tokens received from client, only signature matters here
             return new TokenValidationParameters()
@@ -86,7 +86,7 @@ namespace Rocket_chat_api.Helper
                 ValidateIssuer = false,   // Because there is no issuer in the generated token
                 ValidIssuer = "Sample",
                 ValidAudience = "Sample",
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Signature)) // The same key as the one that generate the token
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signature)) // The same key as the one that generate the token
             };
         }
     }
