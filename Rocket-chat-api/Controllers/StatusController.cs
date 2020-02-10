@@ -108,9 +108,9 @@ namespace Rocket_chat_api.Controllers
                 verifiedUser.EmailVerified = true;
                 _context.Users.Update(verifiedUser);
                 _context.SaveChanges();
-                return Redirect("http://localhost:3000/rocket-chat-front/#/vsuccess");
+                return Redirect("https://boroma4.github.io/rocket-chat-front/#/vsuccess");
             }
-            return Redirect("http://localhost:3000/rocket-chat-front/#/vfailed");
+            return Redirect("https://boroma4.github.io/rocket-chat-front/#/vfailed");
         }
 
 
