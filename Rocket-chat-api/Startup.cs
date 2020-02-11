@@ -42,6 +42,11 @@ namespace Rocket_chat_api
                     .AllowCredentials()
                     .WithOrigins("https://boroma4.github.io");
             }));
+            // The following line enables Application Insights telemetry collection.
+            services.AddApplicationInsightsTelemetry();
+
+            // This code adds other services for your application.
+            services.AddMvc();
             
         }
 
@@ -67,6 +72,8 @@ namespace Rocket_chat_api
             {
                 routes.MapHub<ChatHub>("/chat");
             });
+            IdentityModelEventSource.ShowPII = true; 
+
         }
     }
 }

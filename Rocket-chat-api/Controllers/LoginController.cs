@@ -47,14 +47,14 @@ namespace Rocket_chat_api.Controllers
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password))
              return BadRequest(new {text ="Invalid data"});
 
-            var match = _context.Logins.SingleOrDefault(l=>l.Email.Equals(loginData.Email));
+            var match = _context.Logins.SingleOrDefault(l=>l.Email == (loginData.Email));
 
             if (match == null) return BadRequest(new {text = "Wrong email or password"});
             
             if (!Security.CheckPassword(match.Password, loginData.Password))
                 return BadRequest(new {text = "Wrong email or password"});
                 
-            var user = _context.Users.SingleOrDefault(u => u.Login.Email.Equals(match.Email));
+            var user = _context.Users.SingleOrDefault(u => u.Login.Email == (match.Email));
             
             //IsOnline will be set on socket connection
             if (user != null)
