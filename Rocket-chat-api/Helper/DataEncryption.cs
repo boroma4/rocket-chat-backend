@@ -36,7 +36,6 @@ namespace Rocket_chat_api
                     }  
                 }
             }
-            
             return messageText;
         }
         

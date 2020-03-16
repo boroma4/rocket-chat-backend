@@ -22,6 +22,23 @@ namespace Rocket_chat_api.Hubs
             {
                 _context = context;
             }
+            
+            public override Task OnDisconnectedAsync(Exception exception)
+            {
+                //Context with capital C is Hub context
+                var user = _context.Users.SingleOrDefault(u => u.WebSocketId == Context.ConnectionId);
+                if (user != null)
+                {
+                    user.IsOnline = false;
+                    var userChats = _context.ChatUsers.Where(ch => ch.UserId == user.UserId);
+                    var chatIdList = userChats.Select(userChat => userChat.ChatId).ToList();
+                    Clients.All.SendAsync("UserWentOfflineOrOnline",false,user.UserId,chatIdList);
+                    _context.Users.Update(user);
+                    _context.SaveChanges();
+                }
+                return base.OnDisconnectedAsync(exception);
+            }
+
             public async Task SendDirectMessage(int userId, int chatId, string messageText)
             {
                 var sendToUser = messageText;
@@ -64,13 +81,15 @@ namespace Rocket_chat_api.Hubs
             /// <param name="online">bool that shows whether user should be put online or offline</param>
             /// <param name="userId">id of the user, who is going online or offline</param>
             /// <returns></returns>
-            public async Task UserWentOfflineOrOnline(bool online,int userId)
+            public async Task UserWentOfflineOrOnline(bool online,int userId,string? connectionId)
             {
                 var currentUser = _context.Users.Find(userId);
                 var userChats = _context.ChatUsers.Where(ch => ch.UserId == userId);
                 var chatIdList = userChats.Select(userChat => userChat.ChatId).ToList();
                 
                 currentUser.IsOnline = online;
+                currentUser.WebSocketId = connectionId;
+                
                 await Clients.All.SendAsync("UserWentOfflineOrOnline",online,userId,chatIdList);
                 _context.Users.Update(currentUser);
                 await _context.SaveChangesAsync();
