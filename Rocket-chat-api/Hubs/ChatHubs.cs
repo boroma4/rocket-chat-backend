@@ -1,11 +1,5 @@
-﻿
-using System;
-using System.IO;
+﻿using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Text.Unicode;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using DAL;
@@ -39,17 +33,30 @@ namespace Rocket_chat_api.Hubs
                 return base.OnDisconnectedAsync(exception);
             }
 
-            public async Task SendDirectMessage(int userId, int chatId, string messageText)
+            public async Task SendDirectMessage(int userId, int chatId, string messageText,bool isInvite)
             {
                 var sendToUser = messageText;
-                messageText = DataEncryption.DecryptionFromString(messageText);
-
-                var newMessage = new Message(userId,chatId,messageText);
-
-                _context.Messages.Add(newMessage);
-                await _context.SaveChangesAsync();
-                
                 await Clients.All.SendAsync("sendDirectMessage", userId, chatId, sendToUser);
+
+
+                if (!isInvite)
+                {
+                    messageText = DataEncryption.DecryptionFromString(messageText);
+                    var newMessage = new Message(userId,chatId,messageText);
+                    _context.Messages.Add(newMessage);
+                    await _context.SaveChangesAsync();
+                }
+                /* var chatUserToReceive = _context.ChatUsers.SingleOrDefault(ch => ch.ChatId == chatId && ch.UserId != userId);
+                 if (chatUserToReceive != null)
+                 {
+                     var userToReceive = _context.Users.Find(chatUserToReceive.UserId);
+                     Console.WriteLine(userToReceive.WebSocketId);
+                     if (userToReceive.WebSocketId != null)
+                     {
+                         await Clients.Client(userToReceive.WebSocketId).SendAsync("sendDirectMessage", userId, chatId, sendToUser);
+                     }
+                 }
+                 */
             }
 
             /// <summary>
@@ -127,6 +134,27 @@ namespace Rocket_chat_api.Hubs
                 
                 await Clients.All.SendAsync("UserDataChanged",userId,userChatIds,type,value);
                 await _context.SaveChangesAsync();
+            }
+            /// <summary>
+            /// A function to create a new game with another user
+            /// </summary>
+            public async Task StartNewGame(int userId,int chatId,object? data)
+            {
+                await Clients.All.SendAsync("StartNewGame",userId,chatId,data);
+            }
+            /// <summary>
+            /// A function to end a game
+            /// </summary>
+            public async Task EndGame(int userId,int chatId,object? data)
+            {
+                await Clients.All.SendAsync("EndGame",userId,chatId,data);
+            }
+            /// <summary>
+            /// A function to make a turn in the game
+            /// </summary>
+            public async Task NewTurn(int userId,int chatId,object? data)
+            {
+                await Clients.All.SendAsync("NewTurn",userId,chatId,data);
             }
 
         }
