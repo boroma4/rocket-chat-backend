@@ -47,6 +47,9 @@ namespace Rocket_chat_api.Controllers
 
             if (match == null) return BadRequest(new {text = "Wrong email or password"});
             
+            if (match.Password == "xxxIsGoogleGringoXxx") return BadRequest(new {text = "Please use Google to login"});
+
+            
             if (!Security.CheckPassword(match.Password, loginData.Password))
                 return BadRequest(new {text = "Wrong email or password"});
                 
