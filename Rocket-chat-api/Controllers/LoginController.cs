@@ -51,6 +51,9 @@ namespace Rocket_chat_api.Controllers
 
             if (match == null) return BadRequest(new {text = "Wrong email or password"});
             
+            if (match.Password == _configuration["GOOGLE_PASS"]) return BadRequest(new {text = "Please use Google to login"});
+
+            
             if (!Security.CheckPassword(match.Password, loginData.Password))
                 return BadRequest(new {text = "Wrong email or password"});
                 
@@ -83,7 +86,6 @@ namespace Rocket_chat_api.Controllers
         [Route("/api/register")]
         public async Task<IActionResult> RegisterUser(Login loginData)
         {
-            _context.Database.EnsureCreated();
             if (!ModelState.IsValid || string.IsNullOrEmpty(loginData.Email) || string.IsNullOrEmpty(loginData.Password)|| string.IsNullOrEmpty(loginData.UserName))
                 return BadRequest(new{text = "Invalid data."});
 
@@ -165,7 +167,7 @@ namespace Rocket_chat_api.Controllers
             if (_context.Users.Any(u => u.Login.Email.Equals(email)))
             {
                 var user = _context.Users.Single(u => u.Login.Email.Equals(email));
-                //we dont put our users as verified in the DB
+                //we dont put our google users as verified in the DB
                 //This can still get broken if normal email is registered, but not verified yet
                 if (user.EmailVerified)
                 {
@@ -185,7 +187,7 @@ namespace Rocket_chat_api.Controllers
             }
             else
             {
-                var loginData = new Login() {Email = email,Password = "xxxIsGoogleGringoXxx"};
+                var loginData = new Login() {Email = email,Password = _configuration["GOOGLE_PASS"]};
                 var notificationSetting = new NotificationSettings();
                 _context.NotificationSettings.Add(notificationSetting);
                 await _context.SaveChangesAsync();
