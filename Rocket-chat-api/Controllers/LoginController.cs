@@ -129,37 +129,21 @@ namespace Rocket_chat_api.Controllers
             if (!ModelState.IsValid || string.IsNullOrEmpty(tokenDto.Token))
                 return BadRequest(new {text = "Invalid data."});
             
-            var googleToken = tokenDto.Token;
-            
-            var jwtHandler = new JwtSecurityTokenHandler();
-
-            var readableToken = jwtHandler.CanReadToken(googleToken);
-
-            if (readableToken != true)
+            var token = tokenDto.Token;
+            Dictionary<string, string> validatedTokenClaims;
+            try
             {
-                return BadRequest(new {text = "The token doesn't seem to be in a proper JWT format."});
+                validatedTokenClaims = TokenValidation.ValidateToken(token);
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest(new {text = "Validation failed"});
             }
 
-            var token = jwtHandler.ReadJwtToken(googleToken);
+            var email = validatedTokenClaims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"];
+            var name = validatedTokenClaims["name"];
+            var picture = validatedTokenClaims["imageUrl"];
 
-            //Extract the payload of the JWT
-            var claims = token.Claims;
-            var claimDictionary = claims.ToDictionary(c => c.Type, c => c.Value);
-
-            //turn IEnumerable to collection
-
-            if (claimDictionary["iss"] != "accounts.google.com")
-            {
-                return BadRequest(new {text = "Why are you trying to hack us :("});
-            }
-
-            if (claimDictionary["email_verified"] != "true")
-            {
-                return BadRequest(new {text = "Please verify your Google email first."});
-            }
-
-            var email = claimDictionary["email"];
-            var name = claimDictionary["given_name"];
             //user exists -> login
             if (_context.Users.Any(u => u.Login.Email.Equals(email)))
             {
@@ -193,7 +177,7 @@ namespace Rocket_chat_api.Controllers
                 {
                     Login = loginData,
                     UserName = name,
-                    ImageUrl = claimDictionary["picture"],
+                    ImageUrl = picture,
                     NotificationSettingsId = notificationSetting.NotificationSettingsId
                 };
 
